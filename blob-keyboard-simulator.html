@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blob Keyboard Prototype</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #333;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    #phone {
+      width: 320px;
+      height: 480px;
+      background-color: black;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    #status-bar {
+      height: 20px;
+      background-color: black;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 10px;
+      color: white;
+    }
+    
+    #dots {
+      display: flex;
+    }
+    
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: white;
+      margin-right: 3px;
+    }
+    
+    .dot:last-child {
+      background-color: transparent;
+      border: 1px solid white;
+    }
+    
+    #text-area {
+      height: 150px;
+      background-color: white;
+      padding: 10px;
+      font-size: 20px;
+      overflow: auto;
+      word-wrap: break-word;
+    }
+    
+    #cursor {
+      display: inline-block;
+      width: 2px;
+      height: 20px;
+      background-color: black;
+      animation: blink 1s infinite;
+      vertical-align: middle;
+    }
+    
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+    
+    #keyboard {
+      height: 310px;
+      background-color: #d9d9d9;
+      padding: 10px;
+      display: grid;
+      grid-template-rows: 50px repeat(4, 1fr) 50px;
+      grid-gap: 8px;
+    }
+    
+    .top-row {
+      display: grid;
+      grid-template-columns: 70px 1fr 70px;
+      grid-gap: 8px;
+    }
+    
+    .keyboard-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 8px;
+    }
+    
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 70px 1fr 70px;
+      grid-gap: 8px;
+    }
+    
+    .key {
+      background-color: white;
+      border: 1px solid #999;
+      border-radius: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+    }
+    
+    .blob-key {
+      position: relative;
+      border-radius: 30px 30px 10px 10px;
+    }
+    
+    .blob-key span {
+      position: absolute;
+      font-size: 18px;
+    }
+    
+    .left-letter {
+      left: 10px;
+      bottom: 8px;
+    }
+    
+    .center-letter {
+      top: 8px;
+    }
+    
+    .right-letter {
+      right: 10px;
+      bottom: 8px;
+    }
+    
+    #text-input {
+      text-align: center;
+      border: 1px solid #999;
+      padding: 10px;
+      font-size: 18px;
+      overflow: hidden;
+      height: 50px;
+    }
+    
+    .gesture-feedback {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      padding: 5px;
+      background-color: rgba(255,255,255,0.7);
+      font-size: 12px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="phone">
+    <div id="status-bar">
+      <div id="dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <div id="time">9:41</div>
+      <div id="battery">
+        <svg width="20" height="10" viewBox="0 0 20 10">
+          <rect x="0" y="0" width="18" height="10" stroke="white" fill="none" rx="2" ry="2" />
+          <rect x="18" y="3" width="2" height="4" fill="white" />
+          <rect x="2" y="2" width="14" height="6" fill="white" />
+        </svg>
+      </div>
+    </div>
+    
+    <div id="text-area">
+      <span id="text-content">Four score and seven years</span><span id="cursor"></span>
+    </div>
+    
+    <div id="keyboard">
+      <div class="top-row">
+        <div class="key" id="clear">clear</div>
+        <div class="key" id="text-input">a<span id="cursor-input"></span></div>
+        <div class="key" id="accept">accept</div>
+      </div>
+      
+      <div class="keyboard-row">
+        <div class="key blob-key" data-letters="abc">
+          <span class="left-letter">a</span>
+          <span class="center-letter">b</span>
+          <span class="right-letter">c</span>
+        </div>
+        <div class="key blob-key" data-letters="dfg">
+          <span class="left-letter">d</span>
+          <span class="center-letter">f</span>
+          <span class="right-letter">g</span>
+        </div>
+        <div class="key blob-key" data-letters="ejk">
+          <span class="left-letter">e</span>
+          <span class="center-letter">j</span>
+          <span class="right-letter">k</span>
+        </div>
+        <div class="key blob-key" data-letters="hmp">
+          <span class="left-letter">h</span>
+          <span class="center-letter">m</span>
+          <span class="right-letter">p</span>
+        </div>
+      </div>
+      
+      <div class="keyboard-row">
+        <div class="key blob-key" data-letters="iqv">
+          <span class="left-letter">i</span>
+          <span class="center-letter">q</span>
+          <span class="right-letter">v</span>
+        </div>
+        <div class="key blob-key" data-letters="lwx">
+          <span class="left-letter">l</span>
+          <span class="center-letter">w</span>
+          <span class="right-letter">x</span>
+        </div>
+        <div class="key blob-key" data-letters="nyz">
+          <span class="left-letter">n</span>
+          <span class="center-letter">y</span>
+          <span class="right-letter">z</span>
+        </div>
+        <div class="key blob-key" data-letters="o.?">
+          <span class="left-letter">o</span>
+          <span class="center-letter">.</span>
+          <span class="right-letter">?</span>
+        </div>
+      </div>
+      
+      <div class="keyboard-row">
+        <div class="key blob-key" data-letters="r,-">
+          <span class="left-letter">r</span>
+          <span class="center-letter">,</span>
+          <span class="right-letter">-</span>
+        </div>
+        <div class="key blob-key" data-letters="s@'">
+          <span class="left-letter">s</span>
+          <span class="center-letter">@</span>
+          <span class="right-letter">'</span>
+        </div>
+        <div class="key blob-key" data-letters="t:\"">
+          <span class="left-letter">t</span>
+          <span class="center-letter">:</span>
+          <span class="right-letter">"</span>
+        </div>
+        <div class="key blob-key" data-letters="u/!">
+          <span class="left-letter">u</span>
+          <span class="center-letter">/</span>
+          <span class="right-letter">!</span>
+        </div>
+      </div>
+      
+      <div class="bottom-row">
+        <div class="key" id="shift">shift</div>
+        <div class="key" id="space">space</div>
+        <div class="key" id="numbers">123</div>
+      </div>
+    </div>
+    
+    <div class="gesture-feedback"></div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const blobKeys = document.querySelectorAll('.blob-key');
+      const textInput = document.getElementById('text-input');
+      const textContent = document.getElementById('text-content');
+      const gestureDisplay = document.querySelector('.gesture-feedback');
+      const clearBtn = document.getElementById('clear');
+      const acceptBtn = document.getElementById('accept');
+      const spaceBtn = document.getElementById('space');
+      
+      let inputText = 'a';
+      let startX;
+      let startY;
+      let isMouseDown = false;
+      
+      // Handle touch/mouse events for blob keys
+      blobKeys.forEach(key => {
+        // Desktop mouse events
+        key.addEventListener('mousedown', function(e) {
+          isMouseDown = true;
+          startGesture.call(this, e);
+        });
+        
+        key.addEventListener('mousemove', function(e) {
+          if (isMouseDown) {
+            // Don't trigger end gesture yet on mouse move
+          }
+        });
+        
+        key.addEventListener('mouseup', function(e) {
+          if (isMouseDown) {
+            isMouseDown = false;
+            endGesture.call(this, e);
+          }
+        });
+        
+        key.addEventListener('mouseleave', function(e) {
+          if (isMouseDown) {
+            isMouseDown = false;
+            endGesture.call(this, e);
+          }
+        });
+        
+        // Mobile touch events
+        key.addEventListener('touchstart', startGesture, { passive: true });
+        key.addEventListener('touchend', endGesture);
+        key.addEventListener('touchcancel', cancelGesture);
+      });
+      
+      // Global mouseup to ensure swipe gestures end properly
+      document.addEventListener('mouseup', function() {
+        isMouseDown = false;
+      });
+      
+      function startGesture(e) {
+        const touch = e.type === 'touchstart' ? e.touches[0] : e;
+        startX = touch.clientX;
+        startY = touch.clientY;
+        this.style.backgroundColor = '#e6e6e6';
+      }
+      
+      function endGesture(e) {
+        const key = this;
+        const letters = key.getAttribute('data-letters').split('');
+        const touch = e.type === 'touchend' ? e.changedTouches[0] : e;
+        const endX = touch.clientX;
+        
+        // Reset key style
+        key.style.backgroundColor = 'white';
+        
+        // Calculate gesture type (left swipe, tap, right swipe)
+        const xDiff = endX - startX;
+        let selectedLetter;
+        let gestureType;
+        
+        if (Math.abs(xDiff) < 10) {
+          // Tap - center letter
+          selectedLetter = letters[1];
+          gestureType = 'Tap';
+        } else if (xDiff < -10) {
+          // Swipe left - left letter
+          selectedLetter = letters[0];
+          gestureType = 'Swipe Left';
+        } else {
+          // Swipe right - right letter
+          selectedLetter = letters[2];
+          gestureType = 'Swipe Right';
+        }
+        
+        // Display feedback
+        showGestureFeedback(`${gestureType}: ${selectedLetter}`);
+        
+        // Update input
+        updateInput(selectedLetter);
+      }
+      
+      function cancelGesture() {
+        this.style.backgroundColor = 'white';
+      }
+      
+      function updateInput(letter) {
+        inputText += letter;
+        textInput.textContent = inputText;
+      }
+      
+      function showGestureFeedback(text) {
+        gestureDisplay.textContent = text;
+        gestureDisplay.style.display = 'block';
+        
+        setTimeout(() => {
+          gestureDisplay.style.display = 'none';
+        }, 1000);
+      }
+      
+      // Handle clear button
+      clearBtn.addEventListener('click', function() {
+        inputText = '';
+        textInput.textContent = inputText;
+      });
+      
+      // Handle accept button
+      acceptBtn.addEventListener('click', function() {
+        if (inputText) {
+          textContent.textContent += inputText;
+          inputText = '';
+          textInput.textContent = inputText;
+        }
+      });
+      
+      // Handle space button
+      spaceBtn.addEventListener('click', function() {
+        if (textContent.textContent) {
+          textContent.textContent += ' ';
+        } else if (inputText) {
+          inputText += ' ';
+          textInput.textContent = inputText;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
