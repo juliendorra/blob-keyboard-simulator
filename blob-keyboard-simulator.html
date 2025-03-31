@@ -237,11 +237,14 @@
       left: 25px;
     }
 
-    /* Add styles for active letters */
     .active-letter {
       border-color: #00ff00 !important;
       color: #00ff00 !important;
       z-index: 10;
+    }
+
+    .hidden-letter {
+      display: none;
     }
   </style>
 </head>
@@ -387,9 +390,6 @@
       // Function to reset all keys
       function resetAllKeys() {
         blobKeys.forEach(key => {
-          key.style.transform = 'none';
-          key.style.backgroundColor = 'black';
-          key.style.color = '#ff8c00';
           key.classList.remove('key-active');
           key.classList.remove('key-active-left');
           key.classList.remove('key-active-right');
@@ -397,8 +397,8 @@
           // Reset visibility and styling of all letters
           const letters = key.querySelectorAll('span');
           letters.forEach(letter => {
-            letter.style.display = 'block';
             letter.classList.remove('active-letter');
+            letter.classList.remove('hidden-letter');
           });
         });
       }
@@ -431,7 +431,10 @@
 
             // Reset all letter styles
             const letters = this.querySelectorAll('span');
-            letters.forEach(letter => letter.classList.remove('active-letter'));
+            letters.forEach((letter) => {
+              letter.classList.remove('active-letter');
+              letter.classList.remove('hidden-letter');
+            });
 
             if (Math.abs(xDiff) < 10) {
               // Center - show only center letter
@@ -497,7 +500,10 @@
 
             // Reset all letter styles
             const letters = this.querySelectorAll('span');
-            letters.forEach(letter => letter.classList.remove('active-letter'));
+            letters.forEach((letter) => {
+              letter.classList.remove('active-letter');
+              letter.classList.remove('hidden-letter');
+            });
 
             if (Math.abs(xDiff) < 10) {
               // Center - show only center letter
@@ -543,10 +549,9 @@
         const letters = key.querySelectorAll('span');
         letters.forEach((letter, idx) => {
           if (idx === letterIndex) {
-            letter.style.display = 'block';
             letter.classList.add('active-letter');
           } else {
-            letter.style.display = 'none';
+            letter.classList.add('hidden-letter');
           }
         });
       }
