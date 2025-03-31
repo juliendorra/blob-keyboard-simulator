@@ -2,7 +2,7 @@
 
 **[work in progress]**
 
-I’m teaching a tech design history course in Paris, sharing the history of the mouse, the GUI, the iPhone, even the Newton, and much more with hundreds of design students (and I'm [opening it as workshop for UX/UI design professionals](http://juliendorra.com/atelier-histoire-ux/en/) too!).
+I’m teaching a tech design history course in Paris, sharing the history of the mouse, the GUI, the iPhone, even the Newton, and much more with hundreds of design students (and I'm opening it as a [workshop for UX/UI design professionals](http://juliendorra.com/atelier-histoire-ux/en/) too!).
 
 Ken Kocienda's keyboard development for the iPhone is one of the key innovation stories of my course.
 
