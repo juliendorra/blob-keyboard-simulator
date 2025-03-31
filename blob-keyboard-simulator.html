@@ -373,6 +373,8 @@
       let mainCursorPosition = textContent.textContent.length;
       let inputCursorPosition = 0;
       let activeKey = null;
+      // Add this flag to track touch events
+      let touchProcessed = false;
 
       // Initialize text shown to user
       textInput.innerHTML = inputText + '<span id="cursor-input"></span>';
@@ -400,12 +402,18 @@
       blobKeys.forEach(key => {
         // Desktop mouse events
         key.addEventListener('mousedown', function (e) {
+          // Skip if this was triggered by a touch event
+          if (touchProcessed) return;
+
           isMouseDown = true;
           activeKey = this;
           startGesture.call(this, e);
         });
 
         key.addEventListener('mousemove', function (e) {
+          // Skip if this was triggered by a touch event
+          if (touchProcessed) return;
+
           if (isMouseDown && this === activeKey) {
             // Track movement for swipe direction
             const touch = e;
@@ -437,6 +445,12 @@
         });
 
         key.addEventListener('mouseup', function (e) {
+          // Skip if this was triggered by a touch event
+          if (touchProcessed) {
+            touchProcessed = false;
+            return;
+          }
+
           if (isMouseDown && this === activeKey) {
             isMouseDown = false;
             endGesture.call(this, e);
@@ -447,6 +461,9 @@
         });
 
         key.addEventListener('mouseleave', function (e) {
+          // Skip if this was triggered by a touch event
+          if (touchProcessed) return;
+
           if (isMouseDown && this === activeKey) {
             isMouseDown = false;
             endGesture.call(this, e);
@@ -459,6 +476,7 @@
         // Mobile touch events
         key.addEventListener('touchstart', function (e) {
           activeKey = this;
+          touchProcessed = true;
           startGesture.call(this, e);
         }, { passive: true });
 
@@ -495,8 +513,13 @@
         key.addEventListener('touchend', function (e) {
           if (this === activeKey) {
             endGesture.call(this, e);
+            touchProcessed = true; // Set flag to prevent mouseup from firing
             setTimeout(() => {
               resetAllKeys();
+              // Reset the flag after a short delay
+              setTimeout(() => {
+                touchProcessed = false;
+              }, 300);
             }, 200);
           }
         });
@@ -505,6 +528,7 @@
           if (this === activeKey) {
             cancelGesture.call(this);
             resetAllKeys();
+            touchProcessed = false;
           }
         });
       });
@@ -524,6 +548,9 @@
 
       // Global mouseup to ensure swipe gestures end properly
       document.addEventListener('mouseup', function () {
+        // Skip if this was triggered by a touch event
+        if (touchProcessed) return;
+
         isMouseDown = false;
         resetAllKeys();
       });
@@ -654,9 +681,7 @@
       });
 
       spaceBtn.addEventListener('mousedown', function () {
-
         spaceBtn.classList.add('active');
-
       });
 
       spaceBtn.addEventListener('mouseup', function () {
@@ -793,7 +818,7 @@
           });
         }
       }
-    });
+    });  
   </script>
 </body>
 
