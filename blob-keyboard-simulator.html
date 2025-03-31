@@ -200,11 +200,6 @@
       z-index: 10;
     }
 
-    #shift.active {
-      color: #00ff00 !important;
-      border-color: #00ff00 !important;
-    }
-
     #space.active {
       color: #00ff00 !important;
       border-color: #00ff00 !important;
@@ -281,22 +276,22 @@
       </div>
 
       <div class="keyboard-row">
-        <div class="key blob-key" data-letters="abc" data-uppercase="ABC">
+        <div class="key blob-key" data-letters="abc">
           <span class="left-letter">a</span>
           <span class="center-letter">b</span>
           <span class="right-letter">c</span>
         </div>
-        <div class="key blob-key" data-letters="dfg" data-uppercase="DFG">
+        <div class="key blob-key" data-letters="dfg">
           <span class="left-letter">d</span>
           <span class="center-letter">f</span>
           <span class="right-letter">g</span>
         </div>
-        <div class="key blob-key" data-letters="ejk" data-uppercase="EJK">
+        <div class="key blob-key" data-letters="ejk">
           <span class="left-letter">e</span>
           <span class="center-letter">j</span>
           <span class="right-letter">k</span>
         </div>
-        <div class="key blob-key" data-letters="hmp" data-uppercase="HMP">
+        <div class="key blob-key" data-letters="hmp">
           <span class="left-letter">h</span>
           <span class="center-letter">m</span>
           <span class="right-letter">p</span>
@@ -304,22 +299,22 @@
       </div>
 
       <div class="keyboard-row">
-        <div class="key blob-key" data-letters="iqv" data-uppercase="IQV">
+        <div class="key blob-key" data-letters="iqv">
           <span class="left-letter">i</span>
           <span class="center-letter">q</span>
           <span class="right-letter">v</span>
         </div>
-        <div class="key blob-key" data-letters="lwx" data-uppercase="LWX">
+        <div class="key blob-key" data-letters="lwx">
           <span class="left-letter">l</span>
           <span class="center-letter">w</span>
           <span class="right-letter">x</span>
         </div>
-        <div class="key blob-key" data-letters="nyz" data-uppercase="NYZ">
+        <div class="key blob-key" data-letters="nyz">
           <span class="left-letter">n</span>
           <span class="center-letter">y</span>
           <span class="right-letter">z</span>
         </div>
-        <div class="key blob-key" data-letters="o.?" data-uppercase="O.?">
+        <div class="key blob-key" data-letters="o.?">
           <span class="left-letter">o</span>
           <span class="center-letter">.</span>
           <span class="right-letter">?</span>
@@ -327,22 +322,22 @@
       </div>
 
       <div class="keyboard-row">
-        <div class="key blob-key" data-letters="r,-" data-uppercase="R,-">
+        <div class="key blob-key" data-letters="r,-">
           <span class="left-letter">r</span>
           <span class="center-letter">,</span>
           <span class="right-letter">-</span>
         </div>
-        <div class="key blob-key" data-letters="s@'" data-uppercase="S@'">
+        <div class="key blob-key" data-letters="s@'">
           <span class="left-letter">s</span>
           <span class="center-letter">@</span>
           <span class="right-letter">'</span>
         </div>
-        <div class="key blob-key" data-letters="t:\"" data-uppercase=" T:\"">
+        <div class="key blob-key" data-letters="t:\">
           <span class="left-letter">t</span>
           <span class="center-letter">:</span>
           <span class="right-letter">"</span>
         </div>
-        <div class="key blob-key" data-letters="u/!" data-uppercase="U/!">
+        <div class="key blob-key" data-letters="u/!">
           <span class="left-letter">u</span>
           <span class="center-letter">/</span>
           <span class="right-letter">!</span>
@@ -373,14 +368,12 @@
       const clearBtn = document.getElementById('clear');
       const acceptBtn = document.getElementById('accept');
       const spaceBtn = document.getElementById('space');
-      const shiftBtn = document.getElementById('shift');
       const textArea = document.getElementById('text-area');
 
       let inputText = '';
       let startX;
       let startY;
       let isMouseDown = false;
-      let shiftActive = false;
       let mainCursorPosition = textContent.textContent.length;
       let inputCursorPosition = 0;
       let activeKey = null;
@@ -580,15 +573,7 @@
 
       function endGesture(e) {
         const key = this;
-        let letters;
-
-        // Use uppercase letters if shift is active
-        if (shiftActive) {
-          letters = key.getAttribute('data-uppercase').split('');
-        } else {
-          letters = key.getAttribute('data-letters').split('');
-        }
-
+        const letters = key.getAttribute('data-letters').split('');
         const touch = e.type === 'touchend' ? e.changedTouches[0] : e;
         const endX = touch.clientX;
 
@@ -622,11 +607,6 @@
 
         // Update input
         updateInput(selectedLetter);
-
-        // Reset shift after a letter is typed
-        if (shiftActive) {
-          toggleShift(false);
-        }
       }
 
       function cancelGesture() {
@@ -724,44 +704,7 @@
         }
       }
 
-      // Handle shift button
-      shiftBtn.addEventListener('click', function () {
-        // toggleShift(!shiftActive);  // commenting out the shift that didn't work in the original blob prototype
-      });
 
-      function toggleShift(active) {
-        shiftActive = active;
-
-        if (shiftActive) {
-          shiftBtn.classList.add('active');
-
-          // Update displayed letters to uppercase
-          blobKeys.forEach(key => {
-            const uppercase = key.getAttribute('data-uppercase').split('');
-            const leftLetter = key.querySelector('.left-letter');
-            const centerLetter = key.querySelector('.center-letter');
-            const rightLetter = key.querySelector('.right-letter');
-
-            leftLetter.textContent = uppercase[0];
-            centerLetter.textContent = uppercase[1];
-            rightLetter.textContent = uppercase[2];
-          });
-        } else {
-          shiftBtn.classList.remove('active');
-
-          // Update displayed letters to lowercase
-          blobKeys.forEach(key => {
-            const lowercase = key.getAttribute('data-letters').split('');
-            const leftLetter = key.querySelector('.left-letter');
-            const centerLetter = key.querySelector('.center-letter');
-            const rightLetter = key.querySelector('.right-letter');
-
-            leftLetter.textContent = lowercase[0];
-            centerLetter.textContent = lowercase[1];
-            rightLetter.textContent = lowercase[2];
-          });
-        }
-      }
     });  
   </script>
 </body>
