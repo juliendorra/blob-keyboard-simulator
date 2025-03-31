@@ -164,16 +164,16 @@
     }
 
     .left-letter {
-      left: 5px;
+      left: 4px;
       bottom: 4px;
     }
 
     .center-letter {
-      top: 4px;
+      top: 2px;
     }
 
     .right-letter {
-      right: 5px;
+      right: 4px;
       bottom: 4px;
     }
 
@@ -223,13 +223,17 @@
     }
 
     .key-active-right .right-letter {
-      top: 8px;
-      right: 25px;
+      top: 2px;
+      bottom: unset;
+      right: 20px;
+      transform: skewX(20deg) scaleX(1.25);
     }
 
     .key-active-left .left-letter {
-      top: 8px;
-      left: 25px;
+      top: 2px;
+      bottom: unset;
+      left: 20px;
+      transform: skewX(-20deg) scaleX(1.25);
     }
 
     .active-letter {
