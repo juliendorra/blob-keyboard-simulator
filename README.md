@@ -16,6 +16,13 @@ So I had this crazy idea: let's build a Blob Keyboard simulator 😅 so they can
 
 You can test it here: https://juliendorra.github.io/blob-keyboard-simulator/blob-keyboard-simulator.html
 
+Here are the limitations of the original prototype as explained by Ken Kocienda:
+
+ - Moving the cursor didn't exist at the time of this demo. It came later with the loupe.
+ - There was no backspace. You couldn't delete or go back.
+ - No capitals either.
+ - No animation. Pressed keys just popped, but your eye filled in the details and it felt like it “moved” because of the shapes.
+
 From Ken Kocienda's book:
 
 ![blob-keyboard-book](blob-keyboard-book.png)
