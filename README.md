@@ -8,9 +8,9 @@ Ken Kocienda's keyboard development for the iPhone is one of the key innovation 
 
 The blob keyboard is the first iteration of what would become the iPhone touchscreen keyboard. The blob keyboard was born out of necessity, following a total UX crisis brought upon the team because of the unknown unknows of creating a keyboard on a small piece of glass. Read more about it [in this interview](https://qz.com/1380188/ken-kocienda-qa) or even better in [Kocienda's book Creative Selection](http://creativeselection.io).
 
-Each year, I make the class **even more tangible with props, manuals, packaging, demos, and real vintage device hands-on**. This gives the the students a chance to really understand how device like the first iPhone 2G were experienced. 
+Each year, I make the class **even more tangible with props, manuals, packaging, demos, and real vintage device hands-on**. This gives the the students a chance to really understand how devices like the first iPhone 2G were experienced. 
 
-But manipulating the final experience is not telling the whole design story.
+But manipulating the shipped experience  is not telling you the whole design story.
 
 So I had this crazy idea: let's build a Blob Keyboard simulator 😅 so they can *feel* the design iterations.
 
