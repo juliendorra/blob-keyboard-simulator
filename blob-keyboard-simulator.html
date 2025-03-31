@@ -12,6 +12,9 @@
       padding: 0;
       user-select: none;
       -webkit-user-select: none;
+
+      --button-color: #f79b2b;
+      --active-button-color: #3aeb3a;
     }
 
     html {
@@ -79,7 +82,7 @@
       display: inline-block;
       width: 2px;
       height: 20px;
-      background-color: #00ff00;
+      background-color: #0004d4;
       animation: blink 1s infinite;
       vertical-align: middle;
     }
@@ -88,7 +91,7 @@
       display: inline-block;
       width: 2px;
       height: 18px;
-      background-color: #ff8c00;
+      background-color: var(--button-color);
       animation: blink 1s infinite;
       vertical-align: middle;
     }
@@ -109,47 +112,47 @@
     #keyboard {
       flex: 1;
       background-color: black;
-      padding: 10px;
+      padding: 9px;
       display: flex;
       flex-direction: column;
     }
 
     .top-row {
-      height: 50px;
-      min-height: 50px;
+      height: 45px;
+      min-height: 45px;
       display: grid;
-      grid-template-columns: 70px 1fr 70px;
-      grid-gap: 8px;
-      margin-bottom: 8px;
+      grid-template-columns: 60px 1fr 60px;
+      grid-gap: 20px;
+      margin-bottom: 12px;
     }
 
     .keyboard-row {
       flex: 1;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      grid-gap: 8px;
-      margin-bottom: 8px;
+      grid-gap: 20px;
+      margin-bottom: 12px;
     }
 
     .bottom-row {
-      height: 50px;
-      min-height: 50px;
+      height: 40px;
+      min-height: 40px;
       display: grid;
-      grid-template-columns: 70px 1fr 70px;
-      grid-gap: 8px;
+      grid-template-columns: 60px 1fr 60px;
+      grid-gap: 18px;
+      margin-top: 4px;
     }
 
     .key {
       background-color: black;
-      border: 2px solid #ff8c00;
+      border: 2px solid var(--button-color);
       border-radius: 10px;
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 16px;
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-      color: #ff8c00;
-      margin: 2px;
+      color: var(--button-color);
     }
 
     .blob-key {
@@ -160,7 +163,7 @@
     .blob-key span {
       position: absolute;
       font-size: 16px;
-      color: #ff8c00;
+      color: var(--button-color);
     }
 
     .left-letter {
@@ -179,7 +182,7 @@
 
     #text-input {
       text-align: center;
-      border: 1px solid #ff8c00;
+      border: 1px solid var(--button-color);
       padding: 10px;
       font-size: 18px;
       overflow: hidden;
@@ -201,44 +204,50 @@
     }
 
     #space.active {
-      color: #00ff00 !important;
-      border-color: #00ff00 !important;
+      color: var(--active-button-color) !important;
+      border-color: var(--active-button-color) !important;
     }
 
     .key-active {
-      color: #00ff00 !important;
-      border-color: #00ff00 !important;
+      color: var(--active-button-color) !important;
+      border-color: var(--active-button-color) !important;
+      transform: scaleX(1) scaleY(1.1);
+      bottom: 0;
     }
 
     .key-active-left {
-      color: #00ff00 !important;
-      border-color: #00ff00 !important;
-      transform: skewX(20deg) scaleX(0.8) translate(-10px);
+      color: var(--active-button-color) !important;
+      border-color: var(--active-button-color) !important;
+      transform: skewX(20deg) scaleX(1) scaleY(1.1) translate(-10px);
     }
 
     .key-active-right {
-      color: #00ff00 !important;
-      border-color: #00ff00 !important;
-      transform: skewX(-20deg) scaleX(0.8) translate(10px);
+      color: var(--active-button-color) !important;
+      border-color: var(--active-button-color) !important;
+      transform: skewX(-20deg) scaleX(1) scaleY(1.1) translate(10px);
     }
 
     .key-active-right .right-letter {
       top: 2px;
       bottom: unset;
       right: 20px;
-      transform: skewX(20deg) scaleX(1.25);
+      transform: skewX(20deg) scaleX(1) scaleY(0.8);
     }
 
     .key-active-left .left-letter {
       top: 2px;
       bottom: unset;
       left: 20px;
-      transform: skewX(-20deg) scaleX(1.25);
+      transform: skewX(-20deg) scaleX(1) scaleY(0.8);
+    }
+
+    .key-active .center-letter {
+      transform: scaleX(1) scaleY(0.8);
     }
 
     .active-letter {
-      border-color: #00ff00 !important;
-      color: #00ff00 !important;
+      border-color: var(--active-button-color) !important;
+      color: var(--active-button-color) !important;
       z-index: 10;
     }
 
