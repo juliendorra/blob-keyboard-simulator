@@ -635,9 +635,18 @@
       }
 
       function updateInputDisplay() {
-        textInput.innerHTML = inputText.slice(0, inputCursorPosition) +
+        let beforeText = inputText.slice(0, inputCursorPosition);
+        const afterText = inputText.slice(inputCursorPosition);
+
+        // If the text before the cursor ends with a space, replace it with &nbsp; for display
+        // This prevents the browser from collapsing the space and messing up cursor position
+        if (beforeText.endsWith(' ')) {
+          beforeText = beforeText.slice(0, -1) + '&nbsp;';
+        }
+
+        textInput.innerHTML = beforeText +
           '<span id="cursor-input"></span>' +
-          inputText.slice(inputCursorPosition);
+          afterText;
       }
 
       function showGestureFeedback(text) {
@@ -679,14 +688,7 @@
 
       // Modified space button to directly insert space in the main text area
       spaceBtn.addEventListener('click', function () {
-        // Insert space directly at main cursor position
-        const currentText = textContent.textContent || '';
-        const newText = currentText.slice(0, mainCursorPosition) + ' ' + currentText.slice(mainCursorPosition);
-        textContent.textContent = newText;
-        mainCursorPosition++;
-
-        // Update the text area to show cursor at the right position
-        updateTextAreaCursor();
+        updateInput(" ");
       });
 
       spaceBtn.addEventListener('mousedown', function () {
@@ -703,15 +705,12 @@
 
         if (mainCursorPosition === 0) {
           textArea.innerHTML = '<span id="cursor"></span><span id="text-content">' + text + '</span>';
-          textContent = document.getElementById('text-content');
         } else if (mainCursorPosition === text.length) {
           textArea.innerHTML = '<span id="text-content">' + text + '</span><span id="cursor"></span>';
-          textContent = document.getElementById('text-content');
         } else {
           const beforeCursor = text.substring(0, mainCursorPosition);
           const afterCursor = text.substring(mainCursorPosition);
           textArea.innerHTML = '<span id="text-content">' + beforeCursor + '</span><span id="cursor"></span><span id="text-content-after">' + afterCursor + '</span>';
-          textContent = document.getElementById('text-content');
           const textContentAfter = document.getElementById('text-content-after');
           textContent.textContent = beforeCursor;
           textContentAfter.textContent = afterCursor;
