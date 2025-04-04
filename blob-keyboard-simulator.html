@@ -638,15 +638,13 @@
         let beforeText = inputText.slice(0, inputCursorPosition);
         const afterText = inputText.slice(inputCursorPosition);
 
-        // If the text before the cursor ends with a space, replace it with &nbsp; for display
-        // This prevents the browser from collapsing the space and messing up cursor position
-        if (beforeText.endsWith(' ')) {
-          beforeText = beforeText.slice(0, -1) + '&nbsp;';
-        }
-
-        textInput.innerHTML = beforeText +
-          '<span id="cursor-input"></span>' +
-          afterText;
+        // it's important to wrap the text in span elements to avoid trailing space collapsing
+        textInput.innerHTML = `
+          <span id="text-content">
+          ${beforeText} 
+          </span>
+          <span id="cursor-input"></span>
+          ${afterText}`;
       }
 
       function showGestureFeedback(text) {
