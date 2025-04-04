@@ -442,38 +442,7 @@
           if (touchProcessed) return;
 
           if (isMouseDown && this === activeKey) {
-            // Track movement for swipe direction
-            const touch = e;
-            const xDiff = touch.clientX - startX;
-
-            // Reset this key's style
-            this.classList.remove('key-active');
-            this.classList.remove('key-active-left');
-            this.classList.remove('key-active-right');
-
-            // Reset all letter styles
-            const letters = this.querySelectorAll('span');
-            letters.forEach((letter) => {
-              letter.classList.remove('active-letter');
-              letter.classList.remove('hidden-letter');
-            });
-
-            // Apply hysteresis to get the letter position
-            currentLetterPosition = getLetterPositionWithHysteresis(xDiff);
-            
-            if (currentLetterPosition === 1) {
-              // Center - show only center letter
-              this.classList.add('key-active');
-              highlightLetter(this, 1);
-            } else if (currentLetterPosition === 0) {
-              // Left - show only left letter
-              this.classList.add('key-active-left');
-              highlightLetter(this, 0);
-            } else {
-              // Right - show only right letter
-              this.classList.add('key-active-right');
-              highlightLetter(this, 2);
-            }
+            updateKeyVisuals(this, e);
           }
         });
 
@@ -497,12 +466,21 @@
           // Skip if this was triggered by a touch event
           if (touchProcessed) return;
 
+          // Only update visuals but don't trigger letter selection
           if (isMouseDown && this === activeKey) {
-            isMouseDown = false;
-            endGesture.call(this, e);
-            setTimeout(() => {
-              resetAllKeys();
-            }, 200);
+            // Remove visual active state from this key when mouse leaves
+            this.classList.remove('key-active');
+            this.classList.remove('key-active-left');
+            this.classList.remove('key-active-right');
+            
+            const letters = this.querySelectorAll('span');
+            letters.forEach((letter) => {
+              letter.classList.remove('active-letter');
+              letter.classList.remove('hidden-letter');
+            });
+            
+            // Note: We do NOT set isMouseDown to false or call endGesture
+            // We still keep track of which key is active
           }
         });
 
@@ -612,13 +590,69 @@
         }
       }
 
-      // Global mouseup to ensure swipe gestures end properly
-      document.addEventListener('mouseup', function () {
+      // Helper function to update key visuals based on current swipe position
+      function updateKeyVisuals(key, e) {
+        const touch = e.type === 'touchmove' ? e.touches[0] : e;
+        const xDiff = touch.clientX - startX;
+
+        // Reset this key's style
+        key.classList.remove('key-active');
+        key.classList.remove('key-active-left');
+        key.classList.remove('key-active-right');
+
+        // Reset all letter styles
+        const letters = key.querySelectorAll('span');
+        letters.forEach((letter) => {
+          letter.classList.remove('active-letter');
+          letter.classList.remove('hidden-letter');
+        });
+
+        // Apply hysteresis to get the letter position
+        currentLetterPosition = getLetterPositionWithHysteresis(xDiff);
+        
+        if (currentLetterPosition === 1) {
+          // Center - show only center letter
+          key.classList.add('key-active');
+          highlightLetter(key, 1);
+        } else if (currentLetterPosition === 0) {
+          // Left - show only left letter
+          key.classList.add('key-active-left');
+          highlightLetter(key, 0);
+        } else {
+          // Right - show only right letter
+          key.classList.add('key-active-right');
+          highlightLetter(key, 2);
+        }
+      }
+
+      // Global mousemove to track movement even when the cursor leaves the key
+      document.addEventListener('mousemove', function(e) {
         // Skip if this was triggered by a touch event
         if (touchProcessed) return;
 
+        if (isMouseDown && activeKey) {
+          // If we're still in a mouse-down state and have an active key,
+          // update the active key based on the gesture, even if the cursor
+          // has left the original key element
+          updateKeyVisuals(activeKey, e);
+        }
+      });
+
+      // Global mouseup to ensure swipe gestures end properly
+      document.addEventListener('mouseup', function(e) {
+        // Skip if this was triggered by a touch event
+        if (touchProcessed) return;
+
+        if (isMouseDown && activeKey) {
+          // Finish the gesture if we have an active key
+          endGesture.call(activeKey, e);
+        }
+        
         isMouseDown = false;
-        resetAllKeys();
+        activeKey = null;
+        setTimeout(() => {
+          resetAllKeys();
+        }, 200);
       });
 
       function startGesture(e) {
