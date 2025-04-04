@@ -394,6 +394,17 @@
       let activeKey = null;
       // Add this flag to track touch events
       let touchProcessed = false;
+      
+      // Hysteresis constants for letter selection
+      const HYSTERESIS = {
+        LEFT_THRESHOLD: -15,  // Need to move this far left to switch to left letter
+        LEFT_MAINTAIN: -5,    // Need to move this far right to leave left letter
+        RIGHT_THRESHOLD: 15,  // Need to move this far right to switch to right letter
+        RIGHT_MAINTAIN: 5     // Need to move this far left to leave right letter
+      };
+      
+      // Current letter position (0 = left, 1 = center, 2 = right)
+      let currentLetterPosition = 1;
 
       // Initialize text shown to user
       textInput.innerHTML = inputText + '<span id="cursor-input"></span>';
@@ -447,11 +458,14 @@
               letter.classList.remove('hidden-letter');
             });
 
-            if (Math.abs(xDiff) < 10) {
+            // Apply hysteresis to get the letter position
+            currentLetterPosition = getLetterPositionWithHysteresis(xDiff);
+            
+            if (currentLetterPosition === 1) {
               // Center - show only center letter
               this.classList.add('key-active');
               highlightLetter(this, 1);
-            } else if (xDiff < -10) {
+            } else if (currentLetterPosition === 0) {
               // Left - show only left letter
               this.classList.add('key-active-left');
               highlightLetter(this, 0);
@@ -516,11 +530,14 @@
               letter.classList.remove('hidden-letter');
             });
 
-            if (Math.abs(xDiff) < 10) {
+            // Apply hysteresis to get the letter position
+            currentLetterPosition = getLetterPositionWithHysteresis(xDiff);
+            
+            if (currentLetterPosition === 1) {
               // Center - show only center letter
               this.classList.add('key-active');
               highlightLetter(this, 1);
-            } else if (xDiff < -10) {
+            } else if (currentLetterPosition === 0) {
               // Left - show only left letter
               this.classList.add('key-active-left');
               highlightLetter(this, 0);
@@ -566,6 +583,34 @@
           }
         });
       }
+      
+      // Function to determine letter position with hysteresis
+      function getLetterPositionWithHysteresis(xDiff) {
+        // Apply different thresholds based on current position
+        switch (currentLetterPosition) {
+          case 0: // Currently on left letter
+            if (xDiff > HYSTERESIS.LEFT_MAINTAIN) {
+              // Moving right from left letter
+              return xDiff > HYSTERESIS.RIGHT_THRESHOLD ? 2 : 1;
+            }
+            return 0; // Stay on left letter
+            
+          case 1: // Currently on center letter
+            if (xDiff < HYSTERESIS.LEFT_THRESHOLD) return 0; // Move to left
+            if (xDiff > HYSTERESIS.RIGHT_THRESHOLD) return 2; // Move to right
+            return 1; // Stay on center
+            
+          case 2: // Currently on right letter
+            if (xDiff < HYSTERESIS.RIGHT_MAINTAIN) {
+              // Moving left from right letter
+              return xDiff < HYSTERESIS.LEFT_THRESHOLD ? 0 : 1;
+            }
+            return 2; // Stay on right letter
+            
+          default:
+            return 1; // Default to center
+        }
+      }
 
       // Global mouseup to ensure swipe gestures end properly
       document.addEventListener('mouseup', function () {
@@ -582,6 +627,7 @@
         startY = touch.clientY;
 
         // Default to center position initially
+        currentLetterPosition = 1;
         this.classList.add('key-active');
         highlightLetter(this, 1);
       }
@@ -590,27 +636,26 @@
         const key = this;
         const letters = key.getAttribute('data-letters').split('');
         const touch = e.type === 'touchend' ? e.changedTouches[0] : e;
-        const endX = touch.clientX;
-
-        // Calculate gesture type (left swipe, tap, right swipe)
-        const xDiff = endX - startX;
+        
+        // Use the currentLetterPosition that's tracked with hysteresis
+        // rather than recalculating based on final position
         let selectedLetter;
         let gestureType;
 
-        if (Math.abs(xDiff) < 10) {
-          // Tap - center letter
+        if (currentLetterPosition === 1) {
+          // Center letter
           selectedLetter = letters[1];
           gestureType = 'Tap';
           key.classList.add('key-active');
           highlightLetter(key, 1);
-        } else if (xDiff < -10) {
-          // Swipe left - left letter
+        } else if (currentLetterPosition === 0) {
+          // Left letter
           selectedLetter = letters[0];
           gestureType = 'Swipe Left';
           key.classList.add('key-active-left');
           highlightLetter(key, 0);
         } else {
-          // Swipe right - right letter
+          // Right letter
           selectedLetter = letters[2];
           gestureType = 'Swipe Right';
           key.classList.add('key-active-right');
