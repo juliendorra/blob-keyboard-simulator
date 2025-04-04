@@ -629,23 +629,14 @@
       }
 
       function updateInput(letter) {
-        // Insert the letter at the cursor position
-        inputText = inputText.slice(0, inputCursorPosition) + letter + inputText.slice(inputCursorPosition);
+        // Insert the letter always after the text, as per the original prototype
+        inputText = inputText + letter;
         inputCursorPosition++;
         updateInputDisplay();
       }
 
       function updateInputDisplay() {
-        let beforeText = inputText.slice(0, inputCursorPosition);
-        const afterText = inputText.slice(inputCursorPosition);
-
-        // it's important to wrap the text in span elements to avoid trailing space collapsing
-        textInput.innerHTML = `
-          <span id="text-content">
-          ${beforeText} 
-          </span>
-          <span id="cursor-input"></span>
-          ${afterText}`;
+        textInput.innerHTML = '<span id="text-content">' + inputText + '</span><span id="cursor-input"></span>'
       }
 
       function showGestureFeedback(text) {
@@ -669,9 +660,8 @@
       // Handle accept button
       acceptBtn.addEventListener('click', function () {
         if (inputText) {
-          // Insert at main cursor position
           const currentText = textContent.textContent || '';
-          const newText = currentText.slice(0, mainCursorPosition) + inputText + currentText.slice(mainCursorPosition);
+          const newText = currentText + inputText;
           textContent.textContent = newText;
           mainCursorPosition += inputText.length;
 
@@ -701,21 +691,8 @@
       // Function to update the text area cursor position
       function updateTextAreaCursor() {
         const text = textContent.textContent;
-
-        if (mainCursorPosition === 0) {
-          textArea.innerHTML = '<span id="cursor"></span><span id="text-content">' + text + '</span>';
-        } else if (mainCursorPosition === text.length) {
-          textArea.innerHTML = '<span id="text-content">' + text + '</span><span id="cursor"></span>';
-        } else {
-          const beforeCursor = text.substring(0, mainCursorPosition);
-          const afterCursor = text.substring(mainCursorPosition);
-          textArea.innerHTML = '<span id="text-content">' + beforeCursor + '</span><span id="cursor"></span><span id="text-content-after">' + afterCursor + '</span>';
-          const textContentAfter = document.getElementById('text-content-after');
-          textContent.textContent = beforeCursor;
-          textContentAfter.textContent = afterCursor;
-        }
+        textArea.innerHTML = '<span id="text-content">' + text + '</span><span id="cursor"></span>';
       }
-
 
     });  
   </script>
