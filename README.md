@@ -1,5 +1,7 @@
 ### Experience Ken Kocienda's early iteration of the original iPhone keyboard.
 
+## meant for mobile and touchscreen!
+
 **[work in progress]**
 
 I’m teaching a tech design history course in Paris, sharing the history of the mouse, the GUI, the iPhone, even the Newton, and much more with hundreds of design students (and I'm opening it as a [workshop for UX/UI design professionals](http://juliendorra.com/atelier-histoire-ux/en/) too!).
