@@ -1,6 +1,6 @@
 ### Experience Ken Kocienda's early iteration of the original iPhone keyboard.
 
-## meant for mobile and touchscreen!
+#### meant for mobile and touchscreen!
 
 **[work in progress]**
 
