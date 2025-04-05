@@ -15,6 +15,8 @@
 
       --button-color: #f79b2b;
       --active-button-color: #3aeb3a;
+      --right-skew-value: 11deg;
+      --left-skew-value: -11deg;
     }
 
     html {
@@ -220,27 +222,27 @@
     .key-active-left {
       color: var(--active-button-color) !important;
       border-color: var(--active-button-color) !important;
-      transform: skewX(11deg) scaleX(1) scaleY(1.1) translate(-10px, -2px);
+      transform: skewX(var(--right-skew-value)) scaleX(1) scaleY(1.1) translate(-5px, -2px);
     }
 
     .key-active-right {
       color: var(--active-button-color) !important;
       border-color: var(--active-button-color) !important;
-      transform: skewX(-11deg) scaleX(1) scaleY(1.1) translate(10px, -2px);
+      transform: skewX(var(--left-skew-value)) scaleX(1) scaleY(1.1) translate(5px, -2px);
     }
 
     .key-active-right .right-letter {
       top: 2px;
       bottom: unset;
       right: 20px;
-      transform: skewX(11deg) scaleX(1) scaleY(0.8);
+      transform: skewX(var(--right-skew-value)) scaleX(1) scaleY(0.8);
     }
 
     .key-active-left .left-letter {
       top: 2px;
       bottom: unset;
       left: 20px;
-      transform: skewX(-11deg) scaleX(1) scaleY(0.8);
+      transform: skewX(var(--left-skew-value)) scaleX(1) scaleY(0.8);
     }
 
     .key-active .center-letter {
