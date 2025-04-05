@@ -36,6 +36,9 @@ You can test it here: [Blob Keyboard web demo](https://juliendorra.github.io/blo
 
 It work with a touchpad or mouse on a computer, but it's meant for mobile and touchscreen! That way it's much closer to the original experience.
 
+- Tap for the middle letter
+- Swipe left or right for the side letters
+
 It's like going back in time, grabbing the wallaby touch display on Kocienda's desk (see below!) and trying the first demo of what would become the iPhone keyboard.
 
 ![Wallaby connected its tether and Mac G3](Wallaby was mostly a display with multitouch.jpg)
