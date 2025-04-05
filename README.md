@@ -6,9 +6,9 @@ Go back to september 2005 in the secret zone where 15 developers were building i
 
 ### Backstory of this reconstruction
 
-I’m teaching a tech design history course in Paris, sharing the history of the mouse, the GUI, the iPhone, even the Newton, and much more with hundreds of design students 
+I’m teaching a tech design history course in Paris, sharing the history of the mouse and GUI, the iPhone, even the Newton, and much more with hundreds of design students 
 
-(and I'm opening this as a [workshop for UX/UI design professionals](http://juliendorra.com/atelier-histoire-ux/en/) too!).
+(and I'm opening a unique [UX history hands-on workshop for UX/UI design professionals](http://juliendorra.com/atelier-histoire-ux/en/) too!).
 
 Ken Kocienda's keyboard development for the iPhone is **one of the key innovation stories** of my course.
 
