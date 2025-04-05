@@ -2,7 +2,7 @@
 
 Go back to september 2005 in the secret zone where 15 developers were building iPhone's OS and grab the weird prototype of the iPhone keyboard 🤓
 
-#### Work on desktop, but meant for mobile and touchscreen! (closer to the original experience)
+#### Work on desktop, but meant for phone and touchscreen! (closer to the original experience)
 
 ### Backstory of this reconstruction
 
