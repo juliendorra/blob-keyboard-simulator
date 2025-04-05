@@ -258,6 +258,31 @@
     .hidden-letter {
       display: none;
     }
+
+    #info-icon {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      width: 30px;
+      height: 30px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      color: #333;
+      font-size: 18px;
+      font-weight: bold;
+      font-family: serif; /* For a classic 'i' look */
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.2s;
+    }
+
+    #info-icon:hover {
+      background-color: white;
+    }
   </style>
 </head>
 
@@ -370,6 +395,8 @@
 
     <div class="gesture-feedback"></div>
   </div>
+
+  <a id="info-icon" href="https://github.com/juliendorra/blob-keyboard-simulator" target="_blank" title="About this project">i</a>
 
   <script>
     // Set DEBUG flag based on URL fragment
