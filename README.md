@@ -51,7 +51,7 @@ Here are the limitations of the original prototype as explained by Ken Kocienda:
  - No capitals or numbers either.
  - No animation. Pressed keys just popped, but your eye filled in the details and it felt like it “moved” because of the shapes.
 
-In addition it's **not** a QWERTY keyboard! The iPhone team actually try to get us out of QWERTY but ultimately decided that iPhone's keyboard needed familiarity to be successful.
+In addition it's **not** a QWERTY keyboard! The iPhone team actually tried to get us out of QWERTY but ultimately decided that iPhone's keyboard needed familiarity to be successful.
 
 ### Reference images used
 
