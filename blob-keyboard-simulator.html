@@ -396,7 +396,7 @@
       let activeKey = null;
       // Add this flag to track touch events
       let touchProcessed = false;
-      
+
       // Hysteresis constants for letter selection
       const HYSTERESIS = {
         LEFT_THRESHOLD: -15,  // Need to move this far left to switch to left letter
@@ -404,7 +404,7 @@
         RIGHT_THRESHOLD: 15,  // Need to move this far right to switch to right letter
         RIGHT_MAINTAIN: 5     // Need to move this far left to leave right letter
       };
-      
+
       // Current letter position (0 = left, 1 = center, 2 = right)
       let currentLetterPosition = 1;
 
@@ -474,13 +474,13 @@
             this.classList.remove('key-active');
             this.classList.remove('key-active-left');
             this.classList.remove('key-active-right');
-            
+
             const letters = this.querySelectorAll('span');
             letters.forEach((letter) => {
               letter.classList.remove('active-letter');
               letter.classList.remove('hidden-letter');
             });
-            
+
             // Note: We do NOT set isMouseDown to false or call endGesture
             // We still keep track of which key is active
           }
@@ -512,7 +512,7 @@
 
             // Apply hysteresis to get the letter position
             currentLetterPosition = getLetterPositionWithHysteresis(xDiff);
-            
+
             if (currentLetterPosition === 1) {
               // Center - show only center letter
               this.classList.add('key-active');
@@ -563,7 +563,7 @@
           }
         });
       }
-      
+
       // Function to determine letter position with hysteresis
       function getLetterPositionWithHysteresis(xDiff) {
         // Apply different thresholds based on current position
@@ -574,19 +574,19 @@
               return xDiff > HYSTERESIS.RIGHT_THRESHOLD ? 2 : 1;
             }
             return 0; // Stay on left letter
-            
+
           case 1: // Currently on center letter
             if (xDiff < HYSTERESIS.LEFT_THRESHOLD) return 0; // Move to left
             if (xDiff > HYSTERESIS.RIGHT_THRESHOLD) return 2; // Move to right
             return 1; // Stay on center
-            
+
           case 2: // Currently on right letter
             if (xDiff < HYSTERESIS.RIGHT_MAINTAIN) {
               // Moving left from right letter
               return xDiff < HYSTERESIS.LEFT_THRESHOLD ? 0 : 1;
             }
             return 2; // Stay on right letter
-            
+
           default:
             return 1; // Default to center
         }
@@ -611,7 +611,7 @@
 
         // Apply hysteresis to get the letter position
         currentLetterPosition = getLetterPositionWithHysteresis(xDiff);
-        
+
         if (currentLetterPosition === 1) {
           // Center - show only center letter
           key.classList.add('key-active');
@@ -628,7 +628,7 @@
       }
 
       // Global mousemove to track movement even when the cursor leaves the key
-      document.addEventListener('mousemove', function(e) {
+      document.addEventListener('mousemove', function (e) {
         // Skip if this was triggered by a touch event
         if (touchProcessed) return;
 
@@ -641,7 +641,7 @@
       });
 
       // Global mouseup to ensure swipe gestures end properly
-      document.addEventListener('mouseup', function(e) {
+      document.addEventListener('mouseup', function (e) {
         // Skip if this was triggered by a touch event
         if (touchProcessed) return;
 
@@ -649,7 +649,7 @@
           // Finish the gesture if we have an active key
           endGesture.call(activeKey, e);
         }
-        
+
         isMouseDown = false;
         activeKey = null;
         setTimeout(() => {
@@ -672,7 +672,7 @@
         const key = this;
         const letters = key.getAttribute('data-letters').split('');
         const touch = e.type === 'touchend' ? e.changedTouches[0] : e;
-        
+
         // Use the currentLetterPosition that's tracked with hysteresis
         // rather than recalculating based on final position
         let selectedLetter;
