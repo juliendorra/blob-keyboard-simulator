@@ -206,7 +206,7 @@
       z-index: 10;
     }
 
-    #space.active {
+    #space.active, .key-active-simple {
       color: var(--active-button-color) !important;
       border-color: var(--active-button-color) !important;
     }
@@ -738,6 +738,16 @@
         updateInputDisplay();
       });
 
+      clearBtn.addEventListener('mousedown', function () {
+        this.classList.add('key-active-simple');
+      });
+      clearBtn.addEventListener('mouseup', function () {
+        this.classList.remove('key-active-simple');
+      });
+      clearBtn.addEventListener('mouseleave', function () {
+        this.classList.remove('key-active-simple');
+      });
+
       // Handle accept button
       acceptBtn.addEventListener('click', function () {
         if (inputText) {
@@ -756,17 +766,31 @@
         }
       });
 
+      acceptBtn.addEventListener('mousedown', function () {
+        this.classList.add('key-active-simple');
+      });
+      acceptBtn.addEventListener('mouseup', function () {
+        this.classList.remove('key-active-simple');
+      });
+      acceptBtn.addEventListener('mouseleave', function () {
+        this.classList.remove('key-active-simple');
+      });
+
       // Modified space button to directly insert space in the main text area
       spaceBtn.addEventListener('click', function () {
         updateInput(" ");
       });
 
       spaceBtn.addEventListener('mousedown', function () {
-        spaceBtn.classList.add('active');
+        this.classList.add('key-active-simple');
       });
 
       spaceBtn.addEventListener('mouseup', function () {
-        spaceBtn.classList.remove('active');
+        this.classList.remove('key-active-simple');
+      });
+
+      spaceBtn.addEventListener('mouseleave', function () {
+        this.classList.remove('key-active-simple');
       });
 
       // Function to update the text area cursor position
