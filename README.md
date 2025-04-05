@@ -48,7 +48,7 @@ Here are the limitations of the original prototype as explained by Ken Kocienda:
 
  - Moving the cursor didn't exist at the time of this demo. It came later with the loupe.
  - There was no backspace. You couldn't delete or go back.
- - No capitals either.
+ - No capitals or numbers either.
  - No animation. Pressed keys just popped, but your eye filled in the details and it felt like it “moved” because of the shapes.
 
 In addition it's **not** a QWERTY keyboard! The iPhone team actually try to get us out of QWERTY but ultimately decided that iPhone's keyboard needed familiarity to be successful.
