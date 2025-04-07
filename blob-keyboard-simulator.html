@@ -18,6 +18,17 @@
       --right-skew-value: 11deg;
       --left-skew-value: -11deg;
     }
+    
+    button {
+      background: none;
+      border: none;
+      font: inherit;
+      cursor: pointer;
+      outline: inherit;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
 
     html {
       height: 100%;
@@ -211,6 +222,12 @@
       color: var(--active-button-color) !important;
       border-color: var(--active-button-color) !important;
     }
+    
+    /* Ensure button elements with .key class have the same active state */
+    button.key:active {
+      color: var(--active-button-color) !important;
+      border-color: var(--active-button-color) !important;
+    }
 
     .key-active {
       color: var(--active-button-color) !important;
@@ -314,9 +331,9 @@
 
     <div id="keyboard">
       <div class="top-row">
-        <div class="key" id="clear">clear</div>
+        <button class="key" id="clear">clear</button>
         <div class="key" id="text-input"><span id="cursor-input"></span></div>
-        <div class="key" id="accept">accept</div>
+        <button class="key" id="accept">accept</button>
       </div>
 
       <div class="keyboard-row">
@@ -390,7 +407,7 @@
 
       <div class="bottom-row">
         <div class="key" id="shift">shift</div>
-        <div class="key" id="space">space</div>
+        <button class="key" id="space">space</button>
         <div class="key" id="numbers">123</div>
       </div>
     </div>
