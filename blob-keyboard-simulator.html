@@ -206,7 +206,8 @@
       z-index: 10;
     }
 
-    #space.active, .key-active-simple {
+    /* Style for buttons when actively pressed (mousedown/touch) */
+    .key:active {
       color: var(--active-button-color) !important;
       border-color: var(--active-button-color) !important;
     }
@@ -274,7 +275,8 @@
       color: #333;
       font-size: 18px;
       font-weight: bold;
-      font-family: serif; /* For a classic 'i' look */
+      font-family: serif;
+      /* For a classic 'i' look */
       z-index: 100;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       transition: background-color 0.2s;
@@ -765,16 +767,6 @@
         updateInputDisplay();
       });
 
-      clearBtn.addEventListener('mousedown', function () {
-        this.classList.add('key-active-simple');
-      });
-      clearBtn.addEventListener('mouseup', function () {
-        this.classList.remove('key-active-simple');
-      });
-      clearBtn.addEventListener('mouseleave', function () {
-        this.classList.remove('key-active-simple');
-      });
-
       // Handle accept button
       acceptBtn.addEventListener('click', function () {
         if (inputText) {
@@ -793,31 +785,9 @@
         }
       });
 
-      acceptBtn.addEventListener('mousedown', function () {
-        this.classList.add('key-active-simple');
-      });
-      acceptBtn.addEventListener('mouseup', function () {
-        this.classList.remove('key-active-simple');
-      });
-      acceptBtn.addEventListener('mouseleave', function () {
-        this.classList.remove('key-active-simple');
-      });
-
       // Modified space button to directly insert space in the main text area
       spaceBtn.addEventListener('click', function () {
         updateInput(" ");
-      });
-
-      spaceBtn.addEventListener('mousedown', function () {
-        this.classList.add('key-active-simple');
-      });
-
-      spaceBtn.addEventListener('mouseup', function () {
-        this.classList.remove('key-active-simple');
-      });
-
-      spaceBtn.addEventListener('mouseleave', function () {
-        this.classList.remove('key-active-simple');
       });
 
       // Function to update the text area cursor position
