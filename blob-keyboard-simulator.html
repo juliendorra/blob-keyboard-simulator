@@ -18,7 +18,7 @@
       --right-skew-value: 11deg;
       --left-skew-value: -11deg;
     }
-    
+
     button {
       background: none;
       border: none;
@@ -222,9 +222,15 @@
       color: var(--active-button-color) !important;
       border-color: var(--active-button-color) !important;
     }
-    
+
     /* Ensure button elements with .key class have the same active state */
     button.key:active {
+      color: var(--active-button-color) !important;
+      border-color: var(--active-button-color) !important;
+    }
+
+    /* Style for touch events on mobile */
+    .action-button-active {
       color: var(--active-button-color) !important;
       border-color: var(--active-button-color) !important;
     }
@@ -331,9 +337,9 @@
 
     <div id="keyboard">
       <div class="top-row">
-        <button class="key" id="clear">clear</button>
+        <button class="key action-button" id="clear">clear</button>
         <div class="key" id="text-input"><span id="cursor-input"></span></div>
-        <button class="key" id="accept">accept</button>
+        <button class="key action-button" id="accept">accept</button>
       </div>
 
       <div class="keyboard-row">
@@ -407,7 +413,7 @@
 
       <div class="bottom-row">
         <div class="key" id="shift">shift</div>
-        <button class="key" id="space">space</button>
+        <button class="key action-button" id="space">space</button>
         <div class="key" id="numbers">123</div>
       </div>
     </div>
@@ -812,6 +818,23 @@
         const text = textContent.textContent;
         textArea.innerHTML = '<span id="text-content">' + text + '</span><span id="cursor"></span>';
       }
+
+      // Add touch event handlers for action buttons
+      const actionButtons = document.querySelectorAll('.action-button');
+
+      actionButtons.forEach(button => {
+        button.addEventListener('touchstart', function (e) {
+          this.classList.add('action-button-active');
+        });
+
+        button.addEventListener('touchend', function () {
+          this.classList.remove('action-button-active');
+        });
+
+        button.addEventListener('touchcancel', function () {
+          this.classList.remove('action-button-active');
+        });
+      });
 
     });  
   </script>
