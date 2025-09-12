@@ -32,7 +32,9 @@ I iterated and got feedbacks and guidance from [Ken Kocienda on Bluesky](https:/
 
 ### I want to play with it!
 
-You can test it here: [Blob Keyboard web demo](https://juliendorra.github.io/blob-keyboard-simulator/blob-keyboard-simulator.html)
+You can test it here: [Blob Keyboard web demo](https://juliendorra.com/blobkeyboard)
+
+If you want to use it on iPhone 2G or 3G, use the http, no SSL: [Blob Keyboard web demo no SSL](http://juliendorra.com/blobkeyboard)
 
 It work with a touchpad or mouse on a computer, but it's meant for mobile and touchscreen! That way it's much closer to the original experience.
 

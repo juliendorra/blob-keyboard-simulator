@@ -1,7 +1,7 @@
 on:
   push:
   delete:
-name: 🚀 Deploy and cleanup emulator website
+name: 🚀 Deploy and cleanup website
 jobs:
   web-deploy:
     name: 🎉 Deploy
@@ -29,7 +29,7 @@ jobs:
           server: ${{ secrets.ftp_server }}
           username: ${{ secrets.ftp_user }}
           password: ${{ secrets.ftp_password }}
-          local-dir: ./micropatterns_emulator/
+          local-dir: ./keyboard/
           server-dir: ${{ steps.deploy-path.outputs.server_dir }}
 
   cleanup-deploy:
@@ -62,7 +62,7 @@ jobs:
           username: ${{ secrets.ftp_user }}
           password: ${{ secrets.ftp_password }}
           local-dir: ./empty-folder/
-          server-dir: ./micropatterns_emulator/${{ steps.cleanup-path.outputs.folder_path }}/
+          server-dir: ./keyboard/${{ steps.cleanup-path.outputs.folder_path }}/
           delete: true
           exclude: |
             **/.git*
