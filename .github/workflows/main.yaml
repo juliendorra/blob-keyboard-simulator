@@ -1,0 +1,69 @@
+on:
+  push:
+  delete:
+name: 🚀 Deploy and cleanup emulator website
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Set deployment path
+        id: deploy-path
+        run: |
+          BRANCH_NAME="${{ github.ref_name }}"
+          if [ "$BRANCH_NAME" = "main" ]; then
+            echo "server_dir=./" >> $GITHUB_OUTPUT
+            echo "Deploying main branch to root directory"
+          else
+            echo "server_dir=./--$BRANCH_NAME/" >> $GITHUB_OUTPUT
+            echo "Deploying branch '$BRANCH_NAME' to subfolder '--$BRANCH_NAME/'"
+          fi
+
+      - name: 📂 Sync files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.ftp_server }}
+          username: ${{ secrets.ftp_user }}
+          password: ${{ secrets.ftp_password }}
+          local-dir: ./micropatterns_emulator/
+          server-dir: ${{ steps.deploy-path.outputs.server_dir }}
+
+  cleanup-deploy:
+    name: 🗑️ Remove branch folder
+    runs-on: ubuntu-latest
+    if: github.event_name == 'delete' && github.event.ref_type == 'branch'
+    steps:
+      - name: 🔧 Set cleanup path
+        id: cleanup-path
+        run: |
+          BRANCH_NAME="${{ github.event.ref }}"
+          if [ "$BRANCH_NAME" != "main" ]; then
+            echo "folder_path=--$BRANCH_NAME" >> $GITHUB_OUTPUT
+            echo "should_cleanup=true" >> $GITHUB_OUTPUT
+            echo "Will cleanup folder: --$BRANCH_NAME"
+          else
+            echo "should_cleanup=false" >> $GITHUB_OUTPUT
+            echo "Main branch deleted - no cleanup needed"
+          fi
+
+      - name: 📁 Create temporary empty folder
+        if: steps.cleanup-path.outputs.should_cleanup == 'true'
+        run: mkdir -p empty-folder
+
+      - name: 🗑️ Delete branch folder via FTP
+        if: steps.cleanup-path.outputs.should_cleanup == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.ftp_server }}
+          username: ${{ secrets.ftp_user }}
+          password: ${{ secrets.ftp_password }}
+          local-dir: ./empty-folder/
+          server-dir: ./micropatterns_emulator/${{ steps.cleanup-path.outputs.folder_path }}/
+          delete: true
+          exclude: |
+            **/.git*
+            **/.git*/**
