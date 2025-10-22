@@ -4,316 +4,277 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta property="og:title" content="Blob Keyboard Simulator. Back to 2005!">
-  <meta property="og:description" content="Experience Ken Kocienda's early iteration of the original iPhone keyboard: the Blob Keyboard from september 2005.">
-  <meta property="og:image" content="https://juliendorra.github.io/blob-keyboard-simulator/preview.jpeg">
-  <meta property="og:url" content="https://juliendorra.github.io/blob-keyboard-simulator/blob-keyboard-simulator.html">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
   <title>Blob Keyboard Simulator</title>
   <style>
-    * {
-      box-sizing: border-box;
+    body {
       margin: 0;
       padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-
-      --button-color: #f79b2b;
-      --active-button-color: #3aeb3a;
-      --right-skew-value: 11deg;
-      --left-skew-value: -11deg;
+      background-color: #333333;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #ffffff;
     }
 
-    button {
-      background: none;
-      border: none;
-      font: inherit;
-      cursor: pointer;
-      outline: inherit;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-    }
-
-    html {
-      height: 100%;
-      touch-action: none;
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      height: 100%;
-      align-items: center;
-      background-color: #333;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      overflow: hidden;
+    * {
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
     }
 
     #phone {
       width: 320px;
       height: 480px;
-      background-color: black;
+      margin: 20px auto;
+      background-color: #000000;
+      border: 2px solid #111111;
       position: relative;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
     }
 
     #status-bar {
       height: 20px;
-      min-height: 20px;
-      background-color: black;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 10px;
-      color: white;
+      line-height: 20px;
+      padding: 0 8px;
+      background-color: #000000;
+      font-size: 11px;
+      overflow: hidden;
     }
 
     #dots {
-      display: flex;
+      float: left;
+      margin-top: 7px;
     }
 
     .dot {
+      float: left;
       width: 6px;
       height: 6px;
-      border-radius: 50%;
-      background-color: white;
       margin-right: 3px;
+      background-color: #ffffff;
+      border-radius: 3px;
     }
 
-    .dot:last-child {
+    .dot.last {
       background-color: transparent;
-      border: 1px solid white;
+      border: 1px solid #ffffff;
+    }
+
+    #time {
+      float: left;
+      margin-left: 10px;
+    }
+
+    #battery {
+      float: right;
+      margin-top: 4px;
+      height: 12px;
+    }
+
+    .battery-outline {
+      position: relative;
+      width: 18px;
+      height: 10px;
+      border: 1px solid #ffffff;
+    }
+
+    .battery-level {
+      position: absolute;
+      left: 1px;
+      top: 1px;
+      width: 14px;
+      height: 8px;
+      background-color: #ffffff;
+    }
+
+    .battery-tip {
+      position: absolute;
+      right: -3px;
+      top: 3px;
+      width: 3px;
+      height: 4px;
+      background-color: #ffffff;
     }
 
     #text-area {
+      background-color: #ffffff;
+      color: #000000;
       height: 150px;
-      background-color: white;
       padding: 10px;
       font-size: 20px;
       overflow: auto;
-      word-wrap: break-word;
-    }
-
-    #cursor {
-      display: inline-block;
-      width: 2px;
-      height: 20px;
-      background-color: #0004d4;
-      animation: blink 1s infinite;
-      vertical-align: middle;
-    }
-
-    #cursor-input {
-      display: inline-block;
-      width: 2px;
-      height: 18px;
-      background-color: var(--button-color);
-      animation: blink 1s infinite;
-      vertical-align: middle;
-    }
-
-    @keyframes blink {
-
-      0%,
-      49% {
-        opacity: 1;
-      }
-
-      50%,
-      100% {
-        opacity: 0;
-      }
     }
 
     #keyboard {
-      flex: 1;
-      background-color: black;
-      padding: 9px;
-      display: flex;
-      flex-direction: column;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 148px;
+      padding: 9px 10px;
+      background-color: #000000;
     }
 
-    .top-row {
-      height: 45px;
-      min-height: 45px;
-      display: grid;
-      grid-template-columns: 60px 1fr 60px;
-      grid-gap: 20px;
+    .row {
+      overflow: hidden;
       margin-bottom: 12px;
-    }
-
-    .keyboard-row {
-      flex: 1;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-gap: 20px;
-      margin-bottom: 12px;
-    }
-
-    .bottom-row {
-      height: 40px;
-      min-height: 40px;
-      display: grid;
-      grid-template-columns: 60px 1fr 60px;
-      grid-gap: 18px;
-      margin-top: 4px;
     }
 
     .key {
-      background-color: black;
-      border: 2px solid var(--button-color);
-      border-radius: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      float: left;
+      background-color: #000000;
+      border: 2px solid #f79b2b;
+      color: #f79b2b;
+      text-align: center;
       font-size: 16px;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-      color: var(--button-color);
+      border-radius: 10px;
+      margin-right: 20px;
+      position: relative;
+    }
+
+    .top-row .key,
+    .top-row .display {
+      height: 45px;
+      line-height: 45px;
+      width: 60px;
+    }
+
+    .top-row .key:last-child,
+    .top-row .display:last-child {
+      margin-right: 0;
+    }
+
+    #text-input {
+      width: 136px;
+      background-color: #ffffff;
+      color: #000000;
+      line-height: 45px;
+      padding: 0 10px;
+    }
+
+    #text-input span {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 20px;
+    }
+
+    .keyboard-row .key {
+      width: 58px;
+      height: 52px;
+      margin-right: 20px;
+      border-radius: 34px 34px 0 0;
+    }
+
+    .keyboard-row .key:last-child {
+      margin-right: 0;
     }
 
     .blob-key {
-      position: relative;
-      border-radius: 50px 50px 0 0;
+      padding: 0;
     }
 
     .blob-key span {
       position: absolute;
       font-size: 16px;
-      color: var(--button-color);
+      color: #f79b2b;
     }
 
     .left-letter {
-      left: 4px;
-      bottom: 4px;
+      left: 6px;
+      bottom: 6px;
     }
 
     .center-letter {
-      top: 2px;
+      top: 6px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 18px;
     }
 
     .right-letter {
-      right: 4px;
-      bottom: 4px;
+      right: 6px;
+      bottom: 6px;
+      text-align: right;
     }
 
-    #text-input {
-      text-align: center;
-      border: 1px solid var(--button-color);
-      padding: 10px;
-      font-size: 18px;
-      overflow: hidden;
-      color: black;
-      background-color: white;
-      white-space-collapse: preserve;
+    .bottom-row .key {
+      height: 40px;
+      line-height: 40px;
+      width: 58px;
+      border-radius: 10px;
+      margin-right: 16px;
     }
 
-    .gesture-feedback {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      padding: 5px;
-      background-color: rgba(255, 255, 255, 0.7);
-      font-size: 12px;
-      display: none;
-      z-index: 10;
+    .bottom-row .key:last-child {
+      margin-right: 0;
     }
 
-    /* Style for buttons when actively pressed (mousedown/touch) */
-    .key:active {
-      color: var(--active-button-color) !important;
-      border-color: var(--active-button-color) !important;
+    #space {
+      width: 146px;
     }
 
-    /* Ensure button elements with .key class have the same active state */
-    button.key:active {
-      color: var(--active-button-color) !important;
-      border-color: var(--active-button-color) !important;
-    }
-
-    /* Style for touch events on mobile */
+    .key-active,
+    .key-active-left,
+    .key-active-right,
     .action-button-active {
-      color: var(--active-button-color) !important;
-      border-color: var(--active-button-color) !important;
+      border-color: #3aeb3a;
+      color: #3aeb3a;
     }
 
-    .key-active {
-      color: var(--active-button-color) !important;
-      border-color: var(--active-button-color) !important;
-      transform: scaleX(1) scaleY(1.1) translate(0, -2px);
-      ;
-      bottom: 0;
-    }
-
-    .key-active-left {
-      color: var(--active-button-color) !important;
-      border-color: var(--active-button-color) !important;
-      transform: skewX(var(--right-skew-value)) scaleX(1) scaleY(1.1) translate(-5px, -2px);
-    }
-
-    .key-active-right {
-      color: var(--active-button-color) !important;
-      border-color: var(--active-button-color) !important;
-      transform: skewX(var(--left-skew-value)) scaleX(1) scaleY(1.1) translate(5px, -2px);
-    }
-
-    .key-active-right .right-letter {
-      top: 2px;
-      bottom: unset;
-      right: 20px;
-      transform: skewX(var(--right-skew-value)) scaleX(1) scaleY(0.8);
-    }
-
-    .key-active-left .left-letter {
-      top: 2px;
-      bottom: unset;
-      left: 20px;
-      transform: skewX(var(--left-skew-value)) scaleX(1) scaleY(0.8);
-    }
-
-    .key-active .center-letter {
-      transform: scaleX(1) scaleY(0.8);
-    }
-
+    .key-active span,
+    .key-active-left span,
+    .key-active-right span,
     .active-letter {
-      border-color: var(--active-button-color) !important;
-      color: var(--active-button-color) !important;
-      z-index: 10;
+      color: #3aeb3a;
     }
 
     .hidden-letter {
       display: none;
     }
 
+    #cursor,
+    #cursor-input {
+      display: inline-block;
+      width: 2px;
+      height: 20px;
+      background-color: #0004d4;
+      margin-left: 2px;
+    }
+
+    #cursor-input {
+      background-color: #f79b2b;
+      height: 18px;
+    }
+
+    .gesture-feedback {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      padding: 5px 0;
+      background-color: rgba(255, 255, 255, 0.8);
+      color: #000000;
+      font-size: 12px;
+      display: none;
+    }
+
     #info-icon {
       position: fixed;
-      bottom: 15px;
       right: 15px;
+      bottom: 15px;
       width: 30px;
       height: 30px;
       background-color: rgba(255, 255, 255, 0.8);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      border-radius: 15px;
+      text-align: center;
+      line-height: 30px;
       text-decoration: none;
-      color: #333;
-      font-size: 18px;
+      color: #333333;
       font-weight: bold;
-      font-family: serif;
-      /* For a classic 'i' look */
-      z-index: 100;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      transition: background-color 0.2s;
+      font-family: Georgia, "Times New Roman", serif;
     }
 
     #info-icon:hover {
-      background-color: white;
+      background-color: #ffffff;
     }
   </style>
 </head>
@@ -326,15 +287,14 @@
         <div class="dot"></div>
         <div class="dot"></div>
         <div class="dot"></div>
-        <div class="dot"></div>
+        <div class="dot last"></div>
       </div>
       <div id="time">9:41</div>
       <div id="battery">
-        <svg width="20" height="10" viewBox="0 0 20 10">
-          <rect x="0" y="0" width="18" height="10" stroke="white" fill="none" rx="2" ry="2" />
-          <rect x="18" y="3" width="2" height="4" fill="white" />
-          <rect x="2" y="2" width="14" height="6" fill="white" />
-        </svg>
+        <div class="battery-outline">
+          <div class="battery-level"></div>
+          <div class="battery-tip"></div>
+        </div>
       </div>
     </div>
 
@@ -343,13 +303,15 @@
     </div>
 
     <div id="keyboard">
-      <div class="top-row">
-        <button class="key action-button" id="clear">clear</button>
-        <div class="key" id="text-input"><span id="cursor-input"></span></div>
-        <button class="key action-button" id="accept">accept</button>
+      <div class="top-row row">
+        <button class="key action-button" id="clear" type="button">clear</button>
+        <div class="key display" id="text-input">
+          <span id="input-text"></span><span id="cursor-input"></span>
+        </div>
+        <button class="key action-button" id="accept" type="button">accept</button>
       </div>
 
-      <div class="keyboard-row">
+      <div class="keyboard-row row">
         <div class="key blob-key" data-letters="bac">
           <span class="left-letter">b</span>
           <span class="center-letter">a</span>
@@ -372,7 +334,7 @@
         </div>
       </div>
 
-      <div class="keyboard-row">
+      <div class="keyboard-row row">
         <div class="key blob-key" data-letters="qiv">
           <span class="left-letter">q</span>
           <span class="center-letter">i</span>
@@ -395,7 +357,7 @@
         </div>
       </div>
 
-      <div class="keyboard-row">
+      <div class="keyboard-row row">
         <div class="key blob-key" data-letters=",r-">
           <span class="left-letter">,</span>
           <span class="center-letter">r</span>
@@ -406,7 +368,7 @@
           <span class="center-letter">s</span>
           <span class="right-letter">'</span>
         </div>
-        <div class="key blob-key" data-letters=":t\">
+        <div class="key blob-key" data-letters=':t"'>
           <span class="left-letter">:</span>
           <span class="center-letter">t</span>
           <span class="right-letter">"</span>
@@ -418,432 +380,414 @@
         </div>
       </div>
 
-      <div class="bottom-row">
+      <div class="bottom-row row">
         <div class="key" id="shift">shift</div>
-        <button class="key action-button" id="space">space</button>
+        <button class="key action-button" id="space" type="button">space</button>
         <div class="key" id="numbers">123</div>
       </div>
-    </div>
 
-    <div class="gesture-feedback"></div>
+      <div class="gesture-feedback"></div>
+    </div>
   </div>
 
-  <a id="info-icon" href="https://github.com/juliendorra/blob-keyboard-simulator" target="_blank" title="About this project">i</a>
+  <a id="info-icon" href="https://github.com/juliendorra/blob-keyboard-simulator" target="_blank">i</a>
 
-  <script>
-    // Set DEBUG flag based on URL fragment
-    const DEBUG = window.location.hash === '#debug' || window.location.hash === '#DEBUG';
+  <script type="text/javascript">
+    (function () {
+      var DEBUG = window.location.hash === '#debug' || window.location.hash === '#DEBUG';
 
-    document.addEventListener('DOMContentLoaded', function () {
-      const blobKeys = document.querySelectorAll('.blob-key');
-      const textInput = document.getElementById('text-input');
-      const textContent = document.getElementById('text-content');
-      const cursor = document.getElementById('cursor');
-      const cursorInput = document.getElementById('cursor-input');
-      const gestureDisplay = document.querySelector('.gesture-feedback');
-      const clearBtn = document.getElementById('clear');
-      const acceptBtn = document.getElementById('accept');
-      const spaceBtn = document.getElementById('space');
-      const textArea = document.getElementById('text-area');
-
-      let inputText = '';
-      let startX;
-      let startY;
-      let isMouseDown = false;
-      let mainCursorPosition = textContent.textContent.length;
-      let inputCursorPosition = 0;
-      let activeKey = null;
-      // Add this flag to track touch events
-      let touchProcessed = false;
-
-      // Hysteresis constants for letter selection
-      const HYSTERESIS = {
-        LEFT_THRESHOLD: -15,  // Need to move this far left to switch to left letter
-        LEFT_MAINTAIN: -5,    // Need to move this far right to leave left letter
-        RIGHT_THRESHOLD: 15,  // Need to move this far right to switch to right letter
-        RIGHT_MAINTAIN: 5     // Need to move this far left to leave right letter
-      };
-
-      // Current letter position (0 = left, 1 = center, 2 = right)
-      let currentLetterPosition = 1;
-
-      // Initialize text shown to user
-      textInput.innerHTML = inputText + '<span id="cursor-input"></span>';
-
-      // Function to reset all keys
-      function resetAllKeys() {
-        blobKeys.forEach(key => {
-          key.classList.remove('key-active');
-          key.classList.remove('key-active-left');
-          key.classList.remove('key-active-right');
-
-          // Reset visibility and styling of all letters
-          const letters = key.querySelectorAll('span');
-          letters.forEach(letter => {
-            letter.classList.remove('active-letter');
-            letter.classList.remove('hidden-letter');
-          });
-        });
+      function hasClass(element, className) {
+        if (!element || !element.className) {
+          return false;
+        }
+        return (' ' + element.className + ' ').indexOf(' ' + className + ' ') !== -1;
       }
 
-      // Handle touch/mouse events for blob keys
-      blobKeys.forEach(key => {
-        // Desktop mouse events
-        key.addEventListener('mousedown', function (e) {
-          // Skip if this was triggered by a touch event
-          if (touchProcessed) return;
-
-          isMouseDown = true;
-          activeKey = this;
-          startGesture.call(this, e);
-        });
-
-        key.addEventListener('mousemove', function (e) {
-          // Skip if this was triggered by a touch event
-          if (touchProcessed) return;
-
-          if (isMouseDown && this === activeKey) {
-            updateKeyVisuals(this, e);
+      function addClass(element, className) {
+        if (!hasClass(element, className)) {
+          if (element.className && element.className.length > 0) {
+            element.className += ' ' + className;
+          } else {
+            element.className = className;
           }
-        });
+        }
+      }
 
-        key.addEventListener('mouseup', function (e) {
-          // Skip if this was triggered by a touch event
-          if (touchProcessed) {
-            touchProcessed = false;
+      function removeClass(element, className) {
+        if (!element || !element.className) {
+          return;
+        }
+        var classes = element.className.split(/\s+/);
+        var newClasses = [];
+        for (var i = 0; i < classes.length; i++) {
+          if (classes[i] !== className && classes[i] !== '') {
+            newClasses.push(classes[i]);
+          }
+        }
+        element.className = newClasses.join(' ');
+      }
+
+      function removeClasses(element, classNames) {
+        for (var i = 0; i < classNames.length; i++) {
+          removeClass(element, classNames[i]);
+        }
+      }
+
+      function getByClass(root, className) {
+        var results = [];
+        var elements = root.getElementsByTagName('*');
+        for (var i = 0; i < elements.length; i++) {
+          if (hasClass(elements[i], className)) {
+            results.push(elements[i]);
+          }
+        }
+        return results;
+      }
+
+      function getFirstByClass(root, className) {
+        var elements = getByClass(root, className);
+        return elements.length > 0 ? elements[0] : null;
+      }
+
+      function setNodeText(node, text) {
+        if (typeof node.textContent !== 'undefined') {
+          node.textContent = text;
+        } else {
+          node.innerText = text;
+        }
+      }
+
+      function getNodeText(node) {
+        if (typeof node.textContent !== 'undefined') {
+          return node.textContent;
+        }
+        return node.innerText;
+      }
+
+      function startCursorBlink(element) {
+        if (!element) {
+          return;
+        }
+        var visible = true;
+        setInterval(function () {
+          visible = !visible;
+          element.style.visibility = visible ? 'visible' : 'hidden';
+        }, 600);
+      }
+
+      window.onload = function () {
+        var blobKeys = getByClass(document, 'blob-key');
+        var textInput = document.getElementById('text-input');
+        var inputTextSpan = document.getElementById('input-text');
+        var textContent = document.getElementById('text-content');
+        var cursor = document.getElementById('cursor');
+        var cursorInput = document.getElementById('cursor-input');
+        var gestureDisplay = getFirstByClass(document, 'gesture-feedback');
+        var clearBtn = document.getElementById('clear');
+        var acceptBtn = document.getElementById('accept');
+        var spaceBtn = document.getElementById('space');
+        var textArea = document.getElementById('text-area');
+        var actionButtons = getByClass(document, 'action-button');
+
+        var inputText = '';
+        var startX = 0;
+        var startY = 0;
+        var isMouseDown = false;
+        var mainCursorPosition = getNodeText(textContent).length;
+        var inputCursorPosition = 0;
+        var activeKey = null;
+        var touchProcessed = false;
+
+        var LEFT_THRESHOLD = -15;
+        var LEFT_MAINTAIN = -5;
+        var RIGHT_THRESHOLD = 15;
+        var RIGHT_MAINTAIN = 5;
+
+        var currentLetterPosition = 1;
+
+        setNodeText(textContent, '');
+        setNodeText(inputTextSpan, inputText);
+        startCursorBlink(cursor);
+        startCursorBlink(cursorInput);
+
+        function resetAllKeys() {
+          for (var i = 0; i < blobKeys.length; i++) {
+            removeClasses(blobKeys[i], ['key-active', 'key-active-left', 'key-active-right']);
+            var letters = blobKeys[i].getElementsByTagName('span');
+            for (var j = 0; j < letters.length; j++) {
+              removeClasses(letters[j], ['active-letter', 'hidden-letter']);
+            }
+          }
+        }
+
+        function highlightLetter(key, letterIndex) {
+          var letters = key.getElementsByTagName('span');
+          for (var i = 0; i < letters.length; i++) {
+            if (i === letterIndex) {
+              addClass(letters[i], 'active-letter');
+            } else {
+              addClass(letters[i], 'hidden-letter');
+            }
+          }
+        }
+
+        function getLetterPositionWithHysteresis(xDiff) {
+          if (currentLetterPosition === 0) {
+            if (xDiff > LEFT_MAINTAIN) {
+              return xDiff > RIGHT_THRESHOLD ? 2 : 1;
+            }
+            return 0;
+          }
+          if (currentLetterPosition === 1) {
+            if (xDiff < LEFT_THRESHOLD) {
+              return 0;
+            }
+            if (xDiff > RIGHT_THRESHOLD) {
+              return 2;
+            }
+            return 1;
+          }
+          if (currentLetterPosition === 2) {
+            if (xDiff < RIGHT_MAINTAIN) {
+              return xDiff < LEFT_THRESHOLD ? 0 : 1;
+            }
+            return 2;
+          }
+          return 1;
+        }
+
+        function updateKeyVisuals(key, event) {
+          var touch = event.type.indexOf('touch') === 0 ? event.touches[0] : event;
+          var x = typeof touch.clientX === 'number' ? touch.clientX : touch.pageX;
+          var xDiff = x - startX;
+
+          removeClasses(key, ['key-active', 'key-active-left', 'key-active-right']);
+          var letters = key.getElementsByTagName('span');
+          for (var i = 0; i < letters.length; i++) {
+            removeClasses(letters[i], ['active-letter', 'hidden-letter']);
+          }
+
+          currentLetterPosition = getLetterPositionWithHysteresis(xDiff);
+
+          if (currentLetterPosition === 1) {
+            addClass(key, 'key-active');
+            highlightLetter(key, 1);
+          } else if (currentLetterPosition === 0) {
+            addClass(key, 'key-active-left');
+            highlightLetter(key, 0);
+          } else {
+            addClass(key, 'key-active-right');
+            highlightLetter(key, 2);
+          }
+        }
+
+        function startGesture(event) {
+          var touch = event.type === 'touchstart' ? event.touches[0] : event;
+          startX = typeof touch.clientX === 'number' ? touch.clientX : touch.pageX;
+          startY = typeof touch.clientY === 'number' ? touch.clientY : touch.pageY;
+          currentLetterPosition = 1;
+          addClass(this, 'key-active');
+          highlightLetter(this, 1);
+        }
+
+        function endGesture(event) {
+          var key = this;
+          var lettersValue = key.getAttribute('data-letters');
+          if (!lettersValue) {
             return;
           }
-
-          if (isMouseDown && this === activeKey) {
-            isMouseDown = false;
-            endGesture.call(this, e);
-            setTimeout(() => {
-              resetAllKeys();
-            }, 200);
+          var letters = [];
+          for (var i = 0; i < lettersValue.length; i++) {
+            letters.push(lettersValue.charAt(i));
           }
-        });
+          var selectedLetter = letters[1];
+          var gestureType = 'Tap';
 
-        key.addEventListener('mouseleave', function (e) {
-          // Skip if this was triggered by a touch event
-          if (touchProcessed) return;
-
-          // Only update visuals but don't trigger letter selection
-          if (isMouseDown && this === activeKey) {
-            // Remove visual active state from this key when mouse leaves
-            this.classList.remove('key-active');
-            this.classList.remove('key-active-left');
-            this.classList.remove('key-active-right');
-
-            const letters = this.querySelectorAll('span');
-            letters.forEach((letter) => {
-              letter.classList.remove('active-letter');
-              letter.classList.remove('hidden-letter');
-            });
-
-            // Note: We do NOT set isMouseDown to false or call endGesture
-            // We still keep track of which key is active
-          }
-        });
-
-        // Mobile touch events
-        key.addEventListener('touchstart', function (e) {
-          activeKey = this;
-          touchProcessed = true;
-          startGesture.call(this, e);
-        }, { passive: true });
-
-        key.addEventListener('touchmove', function (e) {
-          if (this === activeKey) {
-            const touch = e.touches[0];
-            const xDiff = touch.clientX - startX;
-
-            // Reset this key's style
-            this.classList.remove('key-active');
-            this.classList.remove('key-active-left');
-            this.classList.remove('key-active-right');
-
-            // Reset all letter styles
-            const letters = this.querySelectorAll('span');
-            letters.forEach((letter) => {
-              letter.classList.remove('active-letter');
-              letter.classList.remove('hidden-letter');
-            });
-
-            // Apply hysteresis to get the letter position
-            currentLetterPosition = getLetterPositionWithHysteresis(xDiff);
-
-            if (currentLetterPosition === 1) {
-              // Center - show only center letter
-              this.classList.add('key-active');
-              highlightLetter(this, 1);
-            } else if (currentLetterPosition === 0) {
-              // Left - show only left letter
-              this.classList.add('key-active-left');
-              highlightLetter(this, 0);
-            } else {
-              // Right - show only right letter
-              this.classList.add('key-active-right');
-              highlightLetter(this, 2);
-            }
-          }
-        }, { passive: true });
-
-        key.addEventListener('touchend', function (e) {
-          if (this === activeKey) {
-            endGesture.call(this, e);
-            touchProcessed = true; // Set flag to prevent mouseup from firing
-            setTimeout(() => {
-              resetAllKeys();
-              // Reset the flag after a short delay
-              setTimeout(() => {
-                touchProcessed = false;
-              }, 300);
-            }, 200);
-          }
-        });
-
-        key.addEventListener('touchcancel', function () {
-          if (this === activeKey) {
-            cancelGesture.call(this);
-            resetAllKeys();
-            touchProcessed = false;
-          }
-        });
-      });
-
-      // Function to highlight a specific letter and hide others
-      function highlightLetter(key, letterIndex) {
-        const letters = key.querySelectorAll('span');
-        letters.forEach((letter, idx) => {
-          if (idx === letterIndex) {
-            letter.classList.add('active-letter');
+          if (currentLetterPosition === 0) {
+            selectedLetter = letters[0];
+            gestureType = 'Swipe Left';
+            addClass(key, 'key-active-left');
+            highlightLetter(key, 0);
+          } else if (currentLetterPosition === 2) {
+            selectedLetter = letters[2];
+            gestureType = 'Swipe Right';
+            addClass(key, 'key-active-right');
+            highlightLetter(key, 2);
           } else {
-            letter.classList.add('hidden-letter');
+            addClass(key, 'key-active');
+            highlightLetter(key, 1);
           }
-        });
-      }
 
-      // Function to determine letter position with hysteresis
-      function getLetterPositionWithHysteresis(xDiff) {
-        // Apply different thresholds based on current position
-        switch (currentLetterPosition) {
-          case 0: // Currently on left letter
-            if (xDiff > HYSTERESIS.LEFT_MAINTAIN) {
-              // Moving right from left letter
-              return xDiff > HYSTERESIS.RIGHT_THRESHOLD ? 2 : 1;
-            }
-            return 0; // Stay on left letter
-
-          case 1: // Currently on center letter
-            if (xDiff < HYSTERESIS.LEFT_THRESHOLD) return 0; // Move to left
-            if (xDiff > HYSTERESIS.RIGHT_THRESHOLD) return 2; // Move to right
-            return 1; // Stay on center
-
-          case 2: // Currently on right letter
-            if (xDiff < HYSTERESIS.RIGHT_MAINTAIN) {
-              // Moving left from right letter
-              return xDiff < HYSTERESIS.LEFT_THRESHOLD ? 0 : 1;
-            }
-            return 2; // Stay on right letter
-
-          default:
-            return 1; // Default to center
-        }
-      }
-
-      // Helper function to update key visuals based on current swipe position
-      function updateKeyVisuals(key, e) {
-        const touch = e.type === 'touchmove' ? e.touches[0] : e;
-        const xDiff = touch.clientX - startX;
-
-        // Reset this key's style
-        key.classList.remove('key-active');
-        key.classList.remove('key-active-left');
-        key.classList.remove('key-active-right');
-
-        // Reset all letter styles
-        const letters = key.querySelectorAll('span');
-        letters.forEach((letter) => {
-          letter.classList.remove('active-letter');
-          letter.classList.remove('hidden-letter');
-        });
-
-        // Apply hysteresis to get the letter position
-        currentLetterPosition = getLetterPositionWithHysteresis(xDiff);
-
-        if (currentLetterPosition === 1) {
-          // Center - show only center letter
-          key.classList.add('key-active');
-          highlightLetter(key, 1);
-        } else if (currentLetterPosition === 0) {
-          // Left - show only left letter
-          key.classList.add('key-active-left');
-          highlightLetter(key, 0);
-        } else {
-          // Right - show only right letter
-          key.classList.add('key-active-right');
-          highlightLetter(key, 2);
-        }
-      }
-
-      // Global mousemove to track movement even when the cursor leaves the key
-      document.addEventListener('mousemove', function (e) {
-        // Skip if this was triggered by a touch event
-        if (touchProcessed) return;
-
-        if (isMouseDown && activeKey) {
-          // If we're still in a mouse-down state and have an active key,
-          // update the active key based on the gesture, even if the cursor
-          // has left the original key element
-          updateKeyVisuals(activeKey, e);
-        }
-      });
-
-      // Global mouseup to ensure swipe gestures end properly
-      document.addEventListener('mouseup', function (e) {
-        // Skip if this was triggered by a touch event
-        if (touchProcessed) return;
-
-        if (isMouseDown && activeKey) {
-          // Finish the gesture if we have an active key
-          endGesture.call(activeKey, e);
+          showGestureFeedback(gestureType + ': ' + selectedLetter);
+          updateInput(selectedLetter);
         }
 
-        isMouseDown = false;
-        activeKey = null;
-        setTimeout(() => {
-          resetAllKeys();
-        }, 200);
-      });
-
-      function startGesture(e) {
-        const touch = e.type === 'touchstart' ? e.touches[0] : e;
-        startX = touch.clientX;
-        startY = touch.clientY;
-
-        // Default to center position initially
-        currentLetterPosition = 1;
-        this.classList.add('key-active');
-        highlightLetter(this, 1);
-      }
-
-      function endGesture(e) {
-        const key = this;
-        const letters = key.getAttribute('data-letters').split('');
-        const touch = e.type === 'touchend' ? e.changedTouches[0] : e;
-
-        // Use the currentLetterPosition that's tracked with hysteresis
-        // rather than recalculating based on final position
-        let selectedLetter;
-        let gestureType;
-
-        if (currentLetterPosition === 1) {
-          // Center letter
-          selectedLetter = letters[1];
-          gestureType = 'Tap';
-          key.classList.add('key-active');
-          highlightLetter(key, 1);
-        } else if (currentLetterPosition === 0) {
-          // Left letter
-          selectedLetter = letters[0];
-          gestureType = 'Swipe Left';
-          key.classList.add('key-active-left');
-          highlightLetter(key, 0);
-        } else {
-          // Right letter
-          selectedLetter = letters[2];
-          gestureType = 'Swipe Right';
-          key.classList.add('key-active-right');
-          highlightLetter(key, 2);
+        function cancelGesture() {
+          removeClasses(this, ['key-active', 'key-active-left', 'key-active-right']);
         }
 
-        // Display feedback
-        showGestureFeedback(`${gestureType}: ${selectedLetter}`);
+        function updateInput(letter) {
+          inputText = inputText + letter;
+          inputCursorPosition += 1;
+          updateInputDisplay();
+        }
 
-        // Update input
-        updateInput(selectedLetter);
-      }
+        function updateInputDisplay() {
+          setNodeText(inputTextSpan, inputText);
+        }
 
-      function cancelGesture() {
-        this.style.backgroundColor = 'black';
-      }
+        function updateTextAreaCursor() {
+          var text = getNodeText(textContent);
+          textArea.innerHTML = '<span id="text-content">' + text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span><span id="cursor"></span>';
+          textContent = document.getElementById('text-content');
+          cursor = document.getElementById('cursor');
+          startCursorBlink(cursor);
+        }
 
-      function updateInput(letter) {
-        // Insert the letter always after the text, as per the original prototype
-        inputText = inputText + letter;
-        inputCursorPosition++;
-        updateInputDisplay();
-      }
+        function showGestureFeedback(text) {
+          if (!DEBUG || !gestureDisplay) {
+            return;
+          }
+          setNodeText(gestureDisplay, text);
+          gestureDisplay.style.display = 'block';
+          setTimeout(function () {
+            gestureDisplay.style.display = 'none';
+          }, 1000);
+        }
 
-      function updateInputDisplay() {
-        textInput.innerHTML = '<span id="text-content">' + inputText + '</span><span id="cursor-input"></span>'
-      }
+        for (var i = 0; i < blobKeys.length; i++) {
+          (function (key) {
+            key.addEventListener('mousedown', function (event) {
+              if (touchProcessed) {
+                return;
+              }
+              isMouseDown = true;
+              activeKey = key;
+              startGesture.call(key, event);
+            }, false);
 
-      function showGestureFeedback(text) {
-        // Only show feedback for debug reasons
-        if (!DEBUG) return;
-        gestureDisplay.textContent = text;
-        gestureDisplay.style.display = 'block';
+            key.addEventListener('mousemove', function (event) {
+              if (touchProcessed) {
+                return;
+              }
+              if (isMouseDown && activeKey === key) {
+                updateKeyVisuals(key, event);
+              }
+            }, false);
 
-        setTimeout(() => {
-          gestureDisplay.style.display = 'none';
-        }, 1000);
-      }
+            key.addEventListener('mouseup', function (event) {
+              if (touchProcessed) {
+                touchProcessed = false;
+                return;
+              }
+              if (isMouseDown && activeKey === key) {
+                isMouseDown = false;
+                endGesture.call(key, event);
+                setTimeout(function () {
+                  resetAllKeys();
+                }, 200);
+              }
+            }, false);
 
-      // Handle clear button
-      clearBtn.addEventListener('click', function () {
-        inputText = '';
-        inputCursorPosition = 0;
-        updateInputDisplay();
-      });
+            key.addEventListener('mouseleave', function () {
+              if (!touchProcessed && isMouseDown && activeKey === key) {
+                cancelGesture.call(key);
+              }
+            }, false);
 
-      // Handle accept button
-      acceptBtn.addEventListener('click', function () {
-        if (inputText) {
-          const currentText = textContent.textContent || '';
-          const newText = currentText + inputText;
-          textContent.textContent = newText;
-          mainCursorPosition += inputText.length;
+            key.addEventListener('touchstart', function (event) {
+              touchProcessed = true;
+              activeKey = key;
+              startGesture.call(key, event);
+            }, false);
 
-          // Clear input
+            key.addEventListener('touchmove', function (event) {
+              if (activeKey === key) {
+                updateKeyVisuals(key, event);
+              }
+            }, false);
+
+            key.addEventListener('touchend', function (event) {
+              if (activeKey === key) {
+                endGesture.call(key, event);
+                setTimeout(function () {
+                  resetAllKeys();
+                  touchProcessed = false;
+                }, 200);
+              }
+            }, false);
+
+            key.addEventListener('touchcancel', function () {
+              if (activeKey === key) {
+                cancelGesture.call(key);
+                resetAllKeys();
+                touchProcessed = false;
+              }
+            }, false);
+          })(blobKeys[i]);
+        }
+
+        document.addEventListener('mousemove', function (event) {
+          if (touchProcessed) {
+            return;
+          }
+          if (isMouseDown && activeKey) {
+            updateKeyVisuals(activeKey, event);
+          }
+        }, false);
+
+        document.addEventListener('mouseup', function (event) {
+          if (touchProcessed) {
+            return;
+          }
+          if (isMouseDown && activeKey) {
+            endGesture.call(activeKey, event);
+          }
+          isMouseDown = false;
+          activeKey = null;
+          setTimeout(function () {
+            resetAllKeys();
+          }, 200);
+        }, false);
+
+        clearBtn.addEventListener('click', function () {
           inputText = '';
           inputCursorPosition = 0;
           updateInputDisplay();
+        }, false);
 
-          // Update the text area to show cursor at the right position
-          updateTextAreaCursor();
+        acceptBtn.addEventListener('click', function () {
+          if (inputText) {
+            var currentText = getNodeText(textContent);
+            var newText = currentText + inputText;
+            setNodeText(textContent, newText);
+            mainCursorPosition += inputText.length;
+            inputText = '';
+            inputCursorPosition = 0;
+            updateInputDisplay();
+            updateTextAreaCursor();
+          }
+        }, false);
+
+        spaceBtn.addEventListener('click', function () {
+          updateInput(' ');
+        }, false);
+
+        for (var j = 0; j < actionButtons.length; j++) {
+          actionButtons[j].addEventListener('touchstart', function () {
+            addClass(this, 'action-button-active');
+          }, false);
+
+          actionButtons[j].addEventListener('touchend', function () {
+            removeClass(this, 'action-button-active');
+          }, false);
+
+          actionButtons[j].addEventListener('touchcancel', function () {
+            removeClass(this, 'action-button-active');
+          }, false);
         }
-      });
-
-      // Modified space button to directly insert space in the main text area
-      spaceBtn.addEventListener('click', function () {
-        updateInput(" ");
-      });
-
-      // Function to update the text area cursor position
-      function updateTextAreaCursor() {
-        const text = textContent.textContent;
-        textArea.innerHTML = '<span id="text-content">' + text + '</span><span id="cursor"></span>';
-      }
-
-      // Add touch event handlers for action buttons
-      const actionButtons = document.querySelectorAll('.action-button');
-
-      actionButtons.forEach(button => {
-        button.addEventListener('touchstart', function (e) {
-          this.classList.add('action-button-active');
-        });
-
-        button.addEventListener('touchend', function () {
-          this.classList.remove('action-button-active');
-        });
-
-        button.addEventListener('touchcancel', function () {
-          this.classList.remove('action-button-active');
-        });
-      });
-
-    });  
+      };
+    })();
   </script>
 </body>
 
