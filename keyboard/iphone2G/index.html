@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Blob Keyboard Simulator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #333333;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #ffffff;
+    }
+
+    * {
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    #phone {
+      width: 320px;
+      height: 480px;
+      margin: 20px auto;
+      background-color: #000000;
+      border: 2px solid #111111;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #status-bar {
+      height: 20px;
+      line-height: 20px;
+      padding: 0 8px;
+      background-color: #000000;
+      font-size: 11px;
+      overflow: hidden;
+    }
+
+    #dots {
+      float: left;
+      margin-top: 7px;
+    }
+
+    .dot {
+      float: left;
+      width: 6px;
+      height: 6px;
+      margin-right: 3px;
+      background-color: #ffffff;
+      border-radius: 3px;
+    }
+
+    .dot.last {
+      background-color: transparent;
+      border: 1px solid #ffffff;
+    }
+
+    #time {
+      float: left;
+      margin-left: 10px;
+    }
+
+    #battery {
+      float: right;
+      margin-top: 4px;
+      height: 12px;
+    }
+
+    .battery-outline {
+      position: relative;
+      width: 18px;
+      height: 10px;
+      border: 1px solid #ffffff;
+    }
+
+    .battery-level {
+      position: absolute;
+      left: 1px;
+      top: 1px;
+      width: 14px;
+      height: 8px;
+      background-color: #ffffff;
+    }
+
+    .battery-tip {
+      position: absolute;
+      right: -3px;
+      top: 3px;
+      width: 3px;
+      height: 4px;
+      background-color: #ffffff;
+    }
+
+    #text-area {
+      background-color: #ffffff;
+      color: #000000;
+      height: 150px;
+      padding: 10px;
+      font-size: 20px;
+      overflow: auto;
+    }
+
+    #keyboard {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 148px;
+      padding: 9px 10px;
+      background-color: #000000;
+    }
+
+    .row {
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .key {
+      float: left;
+      background-color: #000000;
+      border: 2px solid #f79b2b;
+      color: #f79b2b;
+      text-align: center;
+      font-size: 16px;
+      border-radius: 10px;
+      margin-right: 20px;
+      position: relative;
+    }
+
+    .blob-key {
+      border: none;
+      border-radius: 0;
+      overflow: visible;
+      padding: 0;
+    }
+
+    .blob-key .blob-bubble {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-color: #000000;
+      border: 2px solid #f79b2b;
+      border-radius: 34px 34px 0 0;
+      z-index: 1;
+    }
+
+    .top-row .key,
+    .top-row .display {
+      height: 45px;
+      line-height: 45px;
+      width: 60px;
+    }
+
+    .top-row .key:last-child,
+    .top-row .display:last-child {
+      margin-right: 0;
+    }
+
+    #text-input {
+      width: 136px;
+      background-color: #ffffff;
+      color: #000000;
+      line-height: 45px;
+      padding: 0 10px;
+    }
+
+    #text-input span {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 20px;
+    }
+
+    .keyboard-row .key {
+      width: 58px;
+      height: 52px;
+      margin-right: 20px;
+      border-radius: 34px 34px 0 0;
+    }
+
+    .keyboard-row .key:last-child {
+      margin-right: 0;
+    }
+
+    .blob-key span {
+      position: absolute;
+      font-size: 16px;
+      color: #f79b2b;
+      z-index: 2;
+    }
+
+    .left-letter {
+      left: 6px;
+      bottom: 6px;
+    }
+
+    .center-letter {
+      top: 6px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .right-letter {
+      right: 6px;
+      bottom: 6px;
+      text-align: right;
+    }
+
+    .bottom-row .key {
+      height: 40px;
+      line-height: 40px;
+      width: 58px;
+      border-radius: 10px;
+      margin-right: 16px;
+    }
+
+    .bottom-row .key:last-child {
+      margin-right: 0;
+    }
+
+    #space {
+      width: 146px;
+    }
+
+    .key-active,
+    .key-active-left,
+    .key-active-right,
+    .action-button-active {
+      border-color: #3aeb3a;
+      color: #3aeb3a;
+    }
+
+    .key-active .blob-bubble,
+    .key-active-left .blob-bubble,
+    .key-active-right .blob-bubble {
+      border-color: #3aeb3a;
+    }
+
+    .key-active span,
+    .key-active-left span,
+    .key-active-right span,
+    .active-letter {
+      color: #3aeb3a;
+    }
+
+    .key-active .blob-bubble {
+      top: -18px;
+      border-radius: 42px 42px 20px 20px;
+    }
+
+    .key-active-left .blob-bubble {
+      left: -18px;
+      top: -6px;
+      border-radius: 42px 28px 24px 24px;
+    }
+
+    .key-active-right .blob-bubble {
+      right: -18px;
+      top: -6px;
+      border-radius: 28px 42px 24px 24px;
+    }
+
+    .key-active .active-letter {
+      top: -12px;
+      left: 0;
+      right: 0;
+      bottom: auto;
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .key-active-left .active-letter {
+      left: -2px;
+      right: auto;
+      bottom: 14px;
+      top: auto;
+      text-align: left;
+      font-size: 18px;
+    }
+
+    .key-active-right .active-letter {
+      right: -2px;
+      left: auto;
+      bottom: 14px;
+      top: auto;
+      text-align: right;
+      font-size: 18px;
+    }
+
+    .hidden-letter {
+      display: none;
+    }
+
+    #cursor,
+    #cursor-input {
+      display: inline-block;
+      width: 2px;
+      height: 20px;
+      background-color: #0004d4;
+      margin-left: 2px;
+    }
+
+    #cursor-input {
+      background-color: #f79b2b;
+      height: 18px;
+    }
+
+    .gesture-feedback {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      padding: 5px 0;
+      background-color: rgba(255, 255, 255, 0.8);
+      color: #000000;
+      font-size: 12px;
+      display: none;
+    }
+
+    #info-icon {
+      position: fixed;
+      right: 15px;
+      bottom: 15px;
+      width: 30px;
+      height: 30px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 15px;
+      text-align: center;
+      line-height: 30px;
+      text-decoration: none;
+      color: #333333;
+      font-weight: bold;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    #info-icon:hover {
+      background-color: #ffffff;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="phone">
+    <div id="status-bar">
+      <div id="dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot last"></div>
+      </div>
+      <div id="time">9:41</div>
+      <div id="battery">
+        <div class="battery-outline">
+          <div class="battery-level"></div>
+          <div class="battery-tip"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="text-area">
+      <span id="text-content"></span><span id="cursor"></span>
+    </div>
+
+    <div id="keyboard">
+      <div class="top-row row">
+        <button class="key action-button" id="clear" type="button">clear</button>
+        <div class="key display" id="text-input">
+          <span id="input-text"></span><span id="cursor-input"></span>
+        </div>
+        <button class="key action-button" id="accept" type="button">accept</button>
+      </div>
+
+      <div class="keyboard-row row">
+        <div class="key blob-key" data-letters="bac">
+          <div class="blob-bubble"></div>
+          <span class="left-letter">b</span>
+          <span class="center-letter">a</span>
+          <span class="right-letter">c</span>
+        </div>
+        <div class="key blob-key" data-letters="fdg">
+          <div class="blob-bubble"></div>
+          <span class="left-letter">f</span>
+          <span class="center-letter">d</span>
+          <span class="right-letter">g</span>
+        </div>
+        <div class="key blob-key" data-letters="jek">
+          <div class="blob-bubble"></div>
+          <span class="left-letter">j</span>
+          <span class="center-letter">e</span>
+          <span class="right-letter">k</span>
+        </div>
+        <div class="key blob-key" data-letters="mhp">
+          <div class="blob-bubble"></div>
+          <span class="left-letter">m</span>
+          <span class="center-letter">h</span>
+          <span class="right-letter">p</span>
+        </div>
+      </div>
+
+      <div class="keyboard-row row">
+        <div class="key blob-key" data-letters="qiv">
+          <div class="blob-bubble"></div>
+          <span class="left-letter">q</span>
+          <span class="center-letter">i</span>
+          <span class="right-letter">v</span>
+        </div>
+        <div class="key blob-key" data-letters="wlx">
+          <div class="blob-bubble"></div>
+          <span class="left-letter">w</span>
+          <span class="center-letter">l</span>
+          <span class="right-letter">x</span>
+        </div>
+        <div class="key blob-key" data-letters="ynz">
+          <div class="blob-bubble"></div>
+          <span class="left-letter">y</span>
+          <span class="center-letter">n</span>
+          <span class="right-letter">z</span>
+        </div>
+        <div class="key blob-key" data-letters=".o?">
+          <div class="blob-bubble"></div>
+          <span class="left-letter">.</span>
+          <span class="center-letter">o</span>
+          <span class="right-letter">?</span>
+        </div>
+      </div>
+
+      <div class="keyboard-row row">
+        <div class="key blob-key" data-letters=",r-">
+          <div class="blob-bubble"></div>
+          <span class="left-letter">,</span>
+          <span class="center-letter">r</span>
+          <span class="right-letter">-</span>
+        </div>
+        <div class="key blob-key" data-letters="@s'">
+          <div class="blob-bubble"></div>
+          <span class="left-letter">@</span>
+          <span class="center-letter">s</span>
+          <span class="right-letter">'</span>
+        </div>
+        <div class="key blob-key" data-letters=':t"'>
+          <div class="blob-bubble"></div>
+          <span class="left-letter">:</span>
+          <span class="center-letter">t</span>
+          <span class="right-letter">"</span>
+        </div>
+        <div class="key blob-key" data-letters="/u!">
+          <div class="blob-bubble"></div>
+          <span class="left-letter">/</span>
+          <span class="center-letter">u</span>
+          <span class="right-letter">!</span>
+        </div>
+      </div>
+
+      <div class="bottom-row row">
+        <div class="key" id="shift">shift</div>
+        <button class="key action-button" id="space" type="button">space</button>
+        <div class="key" id="numbers">123</div>
+      </div>
+
+      <div class="gesture-feedback"></div>
+    </div>
+  </div>
+
+  <a id="info-icon" href="https://github.com/juliendorra/blob-keyboard-simulator" target="_blank">i</a>
+
+  <script type="text/javascript">
+    (function () {
+      var DEBUG = window.location.hash === '#debug' || window.location.hash === '#DEBUG';
+
+      function hasClass(element, className) {
+        if (!element || !element.className) {
+          return false;
+        }
+        return (' ' + element.className + ' ').indexOf(' ' + className + ' ') !== -1;
+      }
+
+      function addClass(element, className) {
+        if (!hasClass(element, className)) {
+          if (element.className && element.className.length > 0) {
+            element.className += ' ' + className;
+          } else {
+            element.className = className;
+          }
+        }
+      }
+
+      function removeClass(element, className) {
+        if (!element || !element.className) {
+          return;
+        }
+        var classes = element.className.split(/\s+/);
+        var newClasses = [];
+        for (var i = 0; i < classes.length; i++) {
+          if (classes[i] !== className && classes[i] !== '') {
+            newClasses.push(classes[i]);
+          }
+        }
+        element.className = newClasses.join(' ');
+      }
+
+      function removeClasses(element, classNames) {
+        for (var i = 0; i < classNames.length; i++) {
+          removeClass(element, classNames[i]);
+        }
+      }
+
+      function getByClass(root, className) {
+        var results = [];
+        var elements = root.getElementsByTagName('*');
+        for (var i = 0; i < elements.length; i++) {
+          if (hasClass(elements[i], className)) {
+            results.push(elements[i]);
+          }
+        }
+        return results;
+      }
+
+      function getFirstByClass(root, className) {
+        var elements = getByClass(root, className);
+        return elements.length > 0 ? elements[0] : null;
+      }
+
+      function setNodeText(node, text) {
+        if (typeof node.textContent !== 'undefined') {
+          node.textContent = text;
+        } else {
+          node.innerText = text;
+        }
+      }
+
+      function getNodeText(node) {
+        if (typeof node.textContent !== 'undefined') {
+          return node.textContent;
+        }
+        return node.innerText;
+      }
+
+      function startCursorBlink(element) {
+        if (!element) {
+          return;
+        }
+        var visible = true;
+        setInterval(function () {
+          visible = !visible;
+          element.style.visibility = visible ? 'visible' : 'hidden';
+        }, 600);
+      }
+
+      window.onload = function () {
+        var blobKeys = getByClass(document, 'blob-key');
+        var textInput = document.getElementById('text-input');
+        var inputTextSpan = document.getElementById('input-text');
+        var textContent = document.getElementById('text-content');
+        var cursor = document.getElementById('cursor');
+        var cursorInput = document.getElementById('cursor-input');
+        var gestureDisplay = getFirstByClass(document, 'gesture-feedback');
+        var clearBtn = document.getElementById('clear');
+        var acceptBtn = document.getElementById('accept');
+        var spaceBtn = document.getElementById('space');
+        var textArea = document.getElementById('text-area');
+        var actionButtons = getByClass(document, 'action-button');
+
+        var inputText = '';
+        var startX = 0;
+        var startY = 0;
+        var isMouseDown = false;
+        var mainCursorPosition = getNodeText(textContent).length;
+        var inputCursorPosition = 0;
+        var activeKey = null;
+        var touchProcessed = false;
+
+        var LEFT_THRESHOLD = -15;
+        var LEFT_MAINTAIN = -5;
+        var RIGHT_THRESHOLD = 15;
+        var RIGHT_MAINTAIN = 5;
+
+        var currentLetterPosition = 1;
+
+        setNodeText(textContent, '');
+        setNodeText(inputTextSpan, inputText);
+        startCursorBlink(cursor);
+        startCursorBlink(cursorInput);
+
+        function resetAllKeys() {
+          for (var i = 0; i < blobKeys.length; i++) {
+            removeClasses(blobKeys[i], ['key-active', 'key-active-left', 'key-active-right']);
+            var letters = blobKeys[i].getElementsByTagName('span');
+            for (var j = 0; j < letters.length; j++) {
+              removeClasses(letters[j], ['active-letter', 'hidden-letter']);
+            }
+          }
+        }
+
+        function highlightLetter(key, letterIndex) {
+          var letters = key.getElementsByTagName('span');
+          for (var i = 0; i < letters.length; i++) {
+            if (i === letterIndex) {
+              addClass(letters[i], 'active-letter');
+            } else {
+              addClass(letters[i], 'hidden-letter');
+            }
+          }
+        }
+
+        function getLetterPositionWithHysteresis(xDiff) {
+          if (currentLetterPosition === 0) {
+            if (xDiff > LEFT_MAINTAIN) {
+              return xDiff > RIGHT_THRESHOLD ? 2 : 1;
+            }
+            return 0;
+          }
+          if (currentLetterPosition === 1) {
+            if (xDiff < LEFT_THRESHOLD) {
+              return 0;
+            }
+            if (xDiff > RIGHT_THRESHOLD) {
+              return 2;
+            }
+            return 1;
+          }
+          if (currentLetterPosition === 2) {
+            if (xDiff < RIGHT_MAINTAIN) {
+              return xDiff < LEFT_THRESHOLD ? 0 : 1;
+            }
+            return 2;
+          }
+          return 1;
+        }
+
+        function updateKeyVisuals(key, event) {
+          var touch = event.type.indexOf('touch') === 0 ? event.touches[0] : event;
+          var x = typeof touch.clientX === 'number' ? touch.clientX : touch.pageX;
+          var xDiff = x - startX;
+
+          removeClasses(key, ['key-active', 'key-active-left', 'key-active-right']);
+          var letters = key.getElementsByTagName('span');
+          for (var i = 0; i < letters.length; i++) {
+            removeClasses(letters[i], ['active-letter', 'hidden-letter']);
+          }
+
+          currentLetterPosition = getLetterPositionWithHysteresis(xDiff);
+
+          if (currentLetterPosition === 1) {
+            addClass(key, 'key-active');
+            highlightLetter(key, 1);
+          } else if (currentLetterPosition === 0) {
+            addClass(key, 'key-active-left');
+            highlightLetter(key, 0);
+          } else {
+            addClass(key, 'key-active-right');
+            highlightLetter(key, 2);
+          }
+        }
+
+        function startGesture(event) {
+          var touch = event.type === 'touchstart' ? event.touches[0] : event;
+          startX = typeof touch.clientX === 'number' ? touch.clientX : touch.pageX;
+          startY = typeof touch.clientY === 'number' ? touch.clientY : touch.pageY;
+          currentLetterPosition = 1;
+          addClass(this, 'key-active');
+          highlightLetter(this, 1);
+        }
+
+        function endGesture(event) {
+          var key = this;
+          var lettersValue = key.getAttribute('data-letters');
+          if (!lettersValue) {
+            return;
+          }
+          var letters = [];
+          for (var i = 0; i < lettersValue.length; i++) {
+            letters.push(lettersValue.charAt(i));
+          }
+          var selectedLetter = letters[1];
+          var gestureType = 'Tap';
+
+          if (currentLetterPosition === 0) {
+            selectedLetter = letters[0];
+            gestureType = 'Swipe Left';
+            addClass(key, 'key-active-left');
+            highlightLetter(key, 0);
+          } else if (currentLetterPosition === 2) {
+            selectedLetter = letters[2];
+            gestureType = 'Swipe Right';
+            addClass(key, 'key-active-right');
+            highlightLetter(key, 2);
+          } else {
+            addClass(key, 'key-active');
+            highlightLetter(key, 1);
+          }
+
+          showGestureFeedback(gestureType + ': ' + selectedLetter);
+          updateInput(selectedLetter);
+        }
+
+        function cancelGesture() {
+          removeClasses(this, ['key-active', 'key-active-left', 'key-active-right']);
+        }
+
+        function updateInput(letter) {
+          inputText = inputText + letter;
+          inputCursorPosition += 1;
+          updateInputDisplay();
+        }
+
+        function updateInputDisplay() {
+          setNodeText(inputTextSpan, inputText);
+        }
+
+        function updateTextAreaCursor() {
+          var text = getNodeText(textContent);
+          textArea.innerHTML = '<span id="text-content">' + text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</span><span id="cursor"></span>';
+          textContent = document.getElementById('text-content');
+          cursor = document.getElementById('cursor');
+          startCursorBlink(cursor);
+        }
+
+        function showGestureFeedback(text) {
+          if (!DEBUG || !gestureDisplay) {
+            return;
+          }
+          setNodeText(gestureDisplay, text);
+          gestureDisplay.style.display = 'block';
+          setTimeout(function () {
+            gestureDisplay.style.display = 'none';
+          }, 1000);
+        }
+
+        for (var i = 0; i < blobKeys.length; i++) {
+          (function (key) {
+            key.addEventListener('mousedown', function (event) {
+              if (touchProcessed) {
+                return;
+              }
+              isMouseDown = true;
+              activeKey = key;
+              startGesture.call(key, event);
+            }, false);
+
+            key.addEventListener('mousemove', function (event) {
+              if (touchProcessed) {
+                return;
+              }
+              if (isMouseDown && activeKey === key) {
+                updateKeyVisuals(key, event);
+              }
+            }, false);
+
+            key.addEventListener('mouseup', function (event) {
+              if (touchProcessed) {
+                touchProcessed = false;
+                return;
+              }
+              if (isMouseDown && activeKey === key) {
+                isMouseDown = false;
+                endGesture.call(key, event);
+                setTimeout(function () {
+                  resetAllKeys();
+                }, 200);
+              }
+            }, false);
+
+            key.addEventListener('mouseleave', function () {
+              if (!touchProcessed && isMouseDown && activeKey === key) {
+                cancelGesture.call(key);
+              }
+            }, false);
+
+            key.addEventListener('touchstart', function (event) {
+              touchProcessed = true;
+              activeKey = key;
+              startGesture.call(key, event);
+            }, false);
+
+            key.addEventListener('touchmove', function (event) {
+              if (activeKey === key) {
+                updateKeyVisuals(key, event);
+              }
+            }, false);
+
+            key.addEventListener('touchend', function (event) {
+              if (activeKey === key) {
+                endGesture.call(key, event);
+                setTimeout(function () {
+                  resetAllKeys();
+                  touchProcessed = false;
+                }, 200);
+              }
+            }, false);
+
+            key.addEventListener('touchcancel', function () {
+              if (activeKey === key) {
+                cancelGesture.call(key);
+                resetAllKeys();
+                touchProcessed = false;
+              }
+            }, false);
+          })(blobKeys[i]);
+        }
+
+        document.addEventListener('mousemove', function (event) {
+          if (touchProcessed) {
+            return;
+          }
+          if (isMouseDown && activeKey) {
+            updateKeyVisuals(activeKey, event);
+          }
+        }, false);
+
+        document.addEventListener('mouseup', function (event) {
+          if (touchProcessed) {
+            return;
+          }
+          if (isMouseDown && activeKey) {
+            endGesture.call(activeKey, event);
+          }
+          isMouseDown = false;
+          activeKey = null;
+          setTimeout(function () {
+            resetAllKeys();
+          }, 200);
+        }, false);
+
+        clearBtn.addEventListener('click', function () {
+          inputText = '';
+          inputCursorPosition = 0;
+          updateInputDisplay();
+        }, false);
+
+        acceptBtn.addEventListener('click', function () {
+          if (inputText) {
+            var currentText = getNodeText(textContent);
+            var newText = currentText + inputText;
+            setNodeText(textContent, newText);
+            mainCursorPosition += inputText.length;
+            inputText = '';
+            inputCursorPosition = 0;
+            updateInputDisplay();
+            updateTextAreaCursor();
+          }
+        }, false);
+
+        spaceBtn.addEventListener('click', function () {
+          updateInput(' ');
+        }, false);
+
+        for (var j = 0; j < actionButtons.length; j++) {
+          actionButtons[j].addEventListener('touchstart', function () {
+            addClass(this, 'action-button-active');
+          }, false);
+
+          actionButtons[j].addEventListener('touchend', function () {
+            removeClass(this, 'action-button-active');
+          }, false);
+
+          actionButtons[j].addEventListener('touchcancel', function () {
+            removeClass(this, 'action-button-active');
+          }, false);
+        }
+      };
+    })();
+  </script>
+</body>
+
+</html>
